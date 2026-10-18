@@ -54,6 +54,11 @@
   --text-action: 0.875rem;
   --spacing-action: 2.75rem;
 
+  /* Rail width is consumed by both SideRail (w-rail) and the app shell's
+     content offset (pl-rail); they must not drift apart. */
+  --spacing-rail: 4.5rem;
+  --spacing-rail-wide: 15rem;
+
 
   --animate-aurora: aurora 22s ease-in-out infinite alternate;
   --animate-rise: rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
