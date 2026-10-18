@@ -4,45 +4,57 @@ import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
-export type PanelTone = 'dark' | 'bright';
-
-const TONES: Readonly<Record<PanelTone, string>> = {
-  dark: 'glass',
-  bright: 'glass-raised',
-};
-
+/**
+ * The shell every auth screen renders through: an Aero dialog with a titled
+ * header rule, an optional emblem column on the left, and the form on the
+ * right. Screens supply content only — the chrome is defined once, here.
+ */
 export interface AuthPanelProps {
   readonly title: string;
-  readonly subtitle: string;
-  readonly tone?: PanelTone;
+  readonly subtitle?: string;
+  /** Optional left column, e.g. the product emblem on sign-in. */
+  readonly aside?: ReactNode;
   readonly backHref?: string;
+  readonly width?: 'narrow' | 'wide';
   readonly children: ReactNode;
 }
+
+const WIDTHS = {
+  narrow: 'max-w-md',
+  wide: 'max-w-2xl',
+} as const;
 
 export const AuthPanel = ({
   title,
   subtitle,
-  tone = 'dark',
-  backHref = '/',
+  aside,
+  backHref,
+  width = aside ? 'wide' : 'narrow',
   children,
 }: AuthPanelProps) => (
-  <main className="flex min-h-dvh items-center justify-center px-4 py-8">
+  <main className="flex min-h-dvh items-center justify-center px-4 py-10">
     <section
-      className={`${TONES[tone]} w-full max-w-md overflow-hidden rounded-3xl [animation:panel-expand_340ms_cubic-bezier(0.22,1,0.36,1)_both]`}
+      className={`glass-raised aero-sheen w-full rounded-glass animate-panel-expand ${WIDTHS[width]}`}
     >
-      <div className="flex flex-col px-6 pt-4 pb-8 sm:px-8">
-        <Link
-          href={backHref}
-          className="-ml-1.5 flex h-11 w-fit items-center gap-1 text-lg text-paper transition-opacity hover:opacity-70"
-        >
-          <ChevronLeft size={24} />
-          Back
-        </Link>
+      <header className="aero-rule flex items-center gap-3 px-7 py-4">
+        {backHref && (
+          <Link
+            href={backHref}
+            aria-label="Back"
+            className="-ml-2 flex size-7 items-center justify-center rounded-control text-muted transition-colors hover:bg-white/8 hover:text-paper"
+          >
+            <ChevronLeft size={18} />
+          </Link>
+        )}
+        <div className="min-w-0">
+          <h1 className="font-display text-xl font-semibold text-paper aero-text-shadow">{title}</h1>
+          {subtitle && <p className="mt-0.5 truncate text-sm text-muted">{subtitle}</p>}
+        </div>
+      </header>
 
-        <h1 className="mt-2 text-center text-3xl font-extrabold text-paper">{title}</h1>
-        <p className="mt-2 text-center text-base text-white/70">{subtitle}</p>
-
-        {children}
+      <div className="flex flex-col gap-7 px-7 py-7 sm:flex-row sm:items-start sm:gap-9">
+        {aside && <div className="flex shrink-0 justify-center sm:pt-1">{aside}</div>}
+        <div className="flex min-w-0 flex-1 flex-col">{children}</div>
       </div>
     </section>
   </main>

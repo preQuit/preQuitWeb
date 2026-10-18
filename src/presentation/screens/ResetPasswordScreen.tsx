@@ -45,7 +45,7 @@ export const ResetPasswordScreen = () => {
       subtitle="We will email you a link to set a new one."
       backHref={ROUTES.SIGN_IN}
     >
-      <form onSubmit={submit} className="mt-8 flex flex-col gap-3.5">
+      <form onSubmit={submit} className="flex flex-col gap-3.5">
         <SectionLabel>Account email</SectionLabel>
 
         <GlassField

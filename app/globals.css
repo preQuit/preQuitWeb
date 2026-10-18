@@ -62,6 +62,7 @@
   --animate-pulse-sun: pulse-sun 3200ms ease-in-out infinite;
   --animate-drift: drift 26s ease-in-out infinite alternate;
   --animate-sheen: sheen 7s ease-in-out infinite;
+  --animate-panel-expand: panel-expand 340ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 /* ─── keyframes ─────────────────────────────────────────────── */

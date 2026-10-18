@@ -2,21 +2,22 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState, type FormEvent } from 'react';
+import { useId, useState, type FormEvent } from 'react';
 
 import { messageOf } from '../../domain/errors/AppError';
+import { AeroEmblem } from '../components/AeroEmblem';
 import { AuthPanel } from '../components/AuthPanel';
 import { FormError } from '../components/FormError';
 import { GlassButton } from '../components/GlassButton';
 import { GlassField } from '../components/GlassField';
 import { PasswordField } from '../components/PasswordField';
-import { SectionLabel } from '../components/SectionLabel';
 import { useSession } from '../hooks/useSession';
 import { ROUTES } from '../navigation/routes';
 
 export const SignInScreen = () => {
   const router = useRouter();
   const { signIn, isSigningIn } = useSession();
+  const fieldId = useId();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [failure, setFailure] = useState<string | null>(null);
@@ -40,48 +41,50 @@ export const SignInScreen = () => {
   };
 
   return (
-    <AuthPanel title="Welcome back!" subtitle="We're so excited to see you again!">
-      <form onSubmit={submit} className="mt-8 flex flex-col gap-3.5">
-        <SectionLabel>Account information</SectionLabel>
-
+    <AuthPanel title="Welcome to PreQuit" aside={<AeroEmblem size={148} />}>
+      <form onSubmit={submit} className="flex flex-col gap-4">
         <GlassField
+          id={`${fieldId}-identifier`}
+          label="User Name:"
           type="text"
           name="identifier"
           autoComplete="username"
-          placeholder="Email or Username"
-          aria-label="Email or username"
+          autoFocus
           value={identifier}
           onChange={event => setIdentifier(event.target.value)}
         />
 
         <PasswordField
+          id={`${fieldId}-password`}
+          label="Password:"
           name="password"
           autoComplete="current-password"
-          placeholder="Password"
-          aria-label="Password"
           value={password}
           onChange={event => setPassword(event.target.value)}
         />
 
-        <Link
-          href={ROUTES.RESET_PASSWORD}
-          className="w-fit text-sm text-white/70 transition-colors hover:text-paper"
-        >
-          Forgot your password?
-        </Link>
-
         <FormError message={failure} />
 
-        <GlassButton type="submit" tone="primary" disabled={isSigningIn} className="mt-2">
-          {isSigningIn ? 'Logging in…' : 'Log In'}
-        </GlassButton>
+        <div className="flex justify-end pt-1">
+          <GlassButton type="submit" tone="primary" disabled={isSigningIn} className="min-w-28">
+            {isSigningIn ? 'Signing In…' : 'Sign In'}
+          </GlassButton>
+        </div>
 
-        <p className="text-center text-sm text-white/60">
-          Need an account?{' '}
-          <Link href={ROUTES.SIGN_UP} className="font-semibold text-paper hover:underline">
-            Register
+        <div className="flex flex-col items-end gap-1 pt-1 text-sm">
+          <Link
+            href={ROUTES.SIGN_UP}
+            className="text-aero-cyan transition-colors hover:text-paper hover:underline"
+          >
+            Create an account
           </Link>
-        </p>
+          <Link
+            href={ROUTES.RESET_PASSWORD}
+            className="text-aero-cyan transition-colors hover:text-paper hover:underline"
+          >
+            Forgot Password?
+          </Link>
+        </div>
       </form>
     </AuthPanel>
   );

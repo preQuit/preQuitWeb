@@ -85,9 +85,9 @@ export const SignUpScreen = () => {
     <AuthPanel
       title="Create an account"
       subtitle="Join PreQuit — the eye of internet."
-      tone="bright"
+      backHref={ROUTES.SIGN_IN}
     >
-      <form onSubmit={submit} className="mt-7 flex flex-col gap-3.5">
+      <form onSubmit={submit} className="flex flex-col gap-3.5">
         <SectionLabel>Account information</SectionLabel>
 
         <GlassField
