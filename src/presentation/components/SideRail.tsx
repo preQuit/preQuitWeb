@@ -3,12 +3,10 @@
 import { SquarePen } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
 
 import { isCurrent, PRIMARY_NAV, SECONDARY_NAV, type NavItem } from '../navigation/navItems';
 import { ROUTES } from '../navigation/routes';
 import { AeroEmblem } from './AeroEmblem';
-import { ComposerDialog } from './ComposerDialog';
 import { GlassButton } from './GlassButton';
 
 const Item = ({ item, current }: { item: NavItem; current: boolean }) => {
@@ -36,12 +34,14 @@ const Item = ({ item, current }: { item: NavItem; current: boolean }) => {
  * Desktop navigation. Collapses to an icon rail below xl and disappears
  * entirely on small screens, where GlassTabBar takes over.
  */
-export const SideRail = () => {
+export interface SideRailProps {
+  readonly onCompose: () => void;
+}
+
+export const SideRail = ({ onCompose }: SideRailProps) => {
   const pathname = usePathname();
-  const [composing, setComposing] = useState(false);
 
   return (
-    <>
     <nav className="glass-bar fixed inset-y-0 left-0 z-30 hidden w-rail flex-col gap-1 border-y-0 border-l-0 px-3 py-5 md:flex xl:w-rail-wide">
       <Link
         href={ROUTES.SOCIAL}
@@ -61,7 +61,7 @@ export const SideRail = () => {
 
       <GlassButton
         tone="primary"
-        onClick={() => setComposing(true)}
+        onClick={onCompose}
         title="Create a post"
         className="mt-3 w-full justify-center px-0 xl:px-6"
       >
@@ -75,8 +75,5 @@ export const SideRail = () => {
         ))}
       </div>
     </nav>
-
-      <ComposerDialog open={composing} onClose={() => setComposing(false)} />
-    </>
   );
 };

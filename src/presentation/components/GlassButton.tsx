@@ -62,7 +62,7 @@ export const GlassButton = ({
           className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-control bg-linear-to-b from-white/22 to-transparent transition-opacity duration-150 group-active:opacity-40"
         />
       )}
-      <span className="relative aero-text-shadow">{children}</span>
+      <span className="relative inline-flex items-center gap-2 aero-text-shadow">{children}</span>
     </button>
   );
 };

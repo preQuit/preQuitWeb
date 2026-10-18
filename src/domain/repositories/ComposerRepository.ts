@@ -26,6 +26,6 @@ export interface ComposerRepository {
     items: readonly { mimeType: string; byteSize: number }[],
   ): Promise<readonly UploadTicket[]>;
   uploadToTicket(ticket: UploadTicket, file: File): Promise<string>;
-  confirmUpload(mediaId: string, publicId: string): Promise<unknown>;
+  confirmUpload(mediaId: string, publicId: string): Promise<void>;
   createPost(draft: NewPostDraft): Promise<Post>;
 }

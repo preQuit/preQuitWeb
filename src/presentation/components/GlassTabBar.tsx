@@ -1,5 +1,6 @@
 'use client';
 
+import { SquarePen } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -10,7 +11,11 @@ import { isCurrent, PRIMARY_NAV } from '../navigation/navItems';
  * same list, so a route can never be called two different things depending on
  * viewport width.
  */
-export const GlassTabBar = () => {
+export interface GlassTabBarProps {
+  readonly onCompose: () => void;
+}
+
+export const GlassTabBar = ({ onCompose }: GlassTabBarProps) => {
   const pathname = usePathname();
 
   return (
@@ -47,6 +52,15 @@ export const GlassTabBar = () => {
             </Link>
           );
         })}
+
+        <button
+          type="button"
+          onClick={onCompose}
+          aria-label="Create a post"
+          className="relative flex h-full flex-1 flex-col items-center justify-center gap-0.5 text-muted transition-colors hover:text-paper"
+        >
+          <SquarePen size={23} strokeWidth={1.8} />
+        </button>
       </div>
     </nav>
   );
