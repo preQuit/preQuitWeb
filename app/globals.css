@@ -1,26 +1,405 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ───────────────────────────────────────────────────────────────
+   PreQuit — Black Aero
+   Frutiger Aero / Windows Vista–7 glass, rebuilt on a black ground.
+   Surfaces are glossy and raised; inputs are sunken. The gloss break
+   at 48%→50% and the 1px light-top / dark-bottom bevel are the two
+   details that carry the whole look.
+   ─────────────────────────────────────────────────────────────── */
+
+@theme {
+  --color-ink: #000000;
+  --color-paper: #ffffff;
+
+  /* Aero accents — azure through to the Frutiger teal/lime end */
+  --color-aero-cyan: #58d7ff;
+  --color-aero-azure: #2f9bff;
+  --color-aero-teal: #1fe3c2;
+  --color-aero-lime: #9ced4f;
+  --color-aero-deep: #0a3a5c;
+
+  --color-orbit-red: #ff3b30;
+  --color-orbit-violet: #8a2be2;
+  --color-orbit-blue: #2e9bff;
+  --color-like: #ff375f;
+  --color-danger: #ff453a;
+  --color-failure: #ff6b6b;
+
+  --color-glass: rgba(255, 255, 255, 0.07);
+  --color-glass-strong: rgba(255, 255, 255, 0.12);
+  --color-glass-line: rgba(255, 255, 255, 0.16);
+  --color-glass-edge: rgba(136, 226, 255, 0.55);
+  --color-muted: rgba(214, 236, 248, 0.58);
+  --color-faint: rgba(214, 236, 248, 0.38);
+
+  /* Segoe UI is the real Vista/7 face — use it when the client has it. */
+  --font-display: var(--font-display-family), "Segoe UI", "Titillium Web", sans-serif;
+  --font-sans: "Segoe UI", var(--font-body-family), "Open Sans", system-ui, sans-serif;
+
+  --radius-glass: 8px;
+
+  --animate-aurora: aurora 22s ease-in-out infinite alternate;
+  --animate-rise: rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-sheet: sheet 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-fade: fade 450ms ease-out both;
+  --animate-pulse-sun: pulse-sun 3200ms ease-in-out infinite;
+  --animate-drift: drift 26s ease-in-out infinite alternate;
+  --animate-sheen: sheen 7s ease-in-out infinite;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ─── keyframes ─────────────────────────────────────────────── */
+
+@keyframes aurora {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(4%, -6%, 0) scale(1.18); }
 }
 
-@media (prefers-color-scheme: dark) {
+@keyframes drift {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(0, -26px, 0); }
+}
+
+@keyframes sheen {
+  0%, 100% { opacity: 0.35; transform: translateX(-12%); }
+  50%      { opacity: 0.7;  transform: translateX(12%); }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sheet {
+  from { opacity: 0; transform: translateY(100%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pulse-sun {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.05); }
+}
+
+@keyframes orbit-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes panel-expand {
+  from { opacity: 0.6; transform: translateY(28px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ─── base ──────────────────────────────────────────────────── */
+
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    color-scheme: dark;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior-y: none;
+  }
+
+  ::selection {
+    background: rgba(88, 215, 255, 0.3);
+  }
+
+  input,
+  textarea {
+    background: transparent;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-faint);
+  }
+
+  input:focus,
+  textarea:focus,
+  button:focus-visible,
+  a:focus-visible {
+    outline: none;
+  }
+
+  /* Aero focus is a glow, not a ring */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible {
+    box-shadow:
+      0 0 0 1px rgba(88, 215, 255, 0.85),
+      0 0 14px 0 rgba(88, 215, 255, 0.55);
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(88, 215, 255, 0.28) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  *::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    background-color: rgba(120, 200, 235, 0.26);
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(88, 215, 255, 0.45);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ─── glass surfaces ────────────────────────────────────────── */
+
+/* The workhorse panel: frosted, glossy, beveled. */
+@utility glass {
+  position: relative;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.13) 0%,
+      rgba(255, 255, 255, 0.07) 48%,
+      rgba(255, 255, 255, 0.022) 50%,
+      rgba(255, 255, 255, 0.055) 100%
+    ),
+    rgba(10, 16, 22, 0.58);
+  backdrop-filter: blur(26px) saturate(185%);
+  -webkit-backdrop-filter: blur(26px) saturate(185%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.5),
+    inset 0 0 22px -8px rgba(88, 215, 255, 0.22),
+    0 18px 48px -22px rgba(0, 0, 0, 0.95);
+}
+
+@utility glass-subtle {
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.075) 0%,
+      rgba(255, 255, 255, 0.035) 48%,
+      rgba(255, 255, 255, 0.012) 50%,
+      rgba(255, 255, 255, 0.03) 100%
+    ),
+    rgba(8, 13, 18, 0.42);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.35);
+}
+
+/* Dialogs and the sign-in shell — more lift, stronger rim light. */
+@utility glass-raised {
+  position: relative;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.17) 0%,
+      rgba(255, 255, 255, 0.085) 48%,
+      rgba(255, 255, 255, 0.03) 50%,
+      rgba(255, 255, 255, 0.07) 100%
+    ),
+    rgba(9, 15, 21, 0.72);
+  backdrop-filter: blur(36px) saturate(200%);
+  -webkit-backdrop-filter: blur(36px) saturate(200%);
+  border: 1px solid rgba(160, 228, 255, 0.3);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.6),
+    inset 0 0 34px -10px rgba(88, 215, 255, 0.3),
+    0 30px 80px -28px rgba(0, 0, 0, 1),
+    0 0 42px -18px rgba(47, 155, 255, 0.5);
+}
+
+/* Taskbar-style chrome: nav rails and bottom bars. */
+@utility glass-bar {
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.14) 0%,
+      rgba(255, 255, 255, 0.06) 48%,
+      rgba(255, 255, 255, 0.02) 50%,
+      rgba(90, 180, 220, 0.07) 100%
+    ),
+    rgba(6, 11, 16, 0.76);
+  backdrop-filter: blur(30px) saturate(190%);
+  -webkit-backdrop-filter: blur(30px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.42),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.55),
+    0 20px 56px -20px rgba(0, 0, 0, 1);
+}
+
+/* Inputs are SUNKEN in Aero — the inverse bevel of a button. */
+@utility glass-field {
+  background:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.26) 100%),
+    rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+  box-shadow:
+    inset 0 2px 4px 0 rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 0 rgba(0, 0, 0, 0.85),
+    0 1px 0 0 rgba(255, 255, 255, 0.14);
+  transition: box-shadow 180ms ease, border-color 180ms ease;
+}
+
+@utility glass-field-focus {
+  border-color: rgba(88, 215, 255, 0.7);
+  box-shadow:
+    inset 0 2px 4px 0 rgba(0, 0, 0, 0.6),
+    0 1px 0 0 rgba(255, 255, 255, 0.14),
+    0 0 0 1px rgba(88, 215, 255, 0.5),
+    0 0 16px 0 rgba(88, 215, 255, 0.4);
+}
+
+/* ─── glossy controls ───────────────────────────────────────── */
+
+/* The Vista button: gradient, hard gloss break, bevel, hover glow. */
+@utility aero-button {
+  position: relative;
+  overflow: hidden;
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.72);
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.26) 0%,
+      rgba(255, 255, 255, 0.13) 48%,
+      rgba(255, 255, 255, 0.03) 50%,
+      rgba(255, 255, 255, 0.11) 100%
+    ),
+    linear-gradient(to bottom, #1d2b38 0%, #0d1620 100%);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.5),
+    0 1px 2px 0 rgba(0, 0, 0, 0.8);
+  transition: box-shadow 160ms ease, filter 160ms ease;
+}
+
+@utility aero-button-hover {
+  filter: brightness(1.22);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.65),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.5),
+    inset 0 0 20px -4px rgba(88, 215, 255, 0.5),
+    0 0 18px 0 rgba(88, 215, 255, 0.42),
+    0 1px 2px 0 rgba(0, 0, 0, 0.8);
+}
+
+/* Primary call to action — the azure Aero fill. */
+@utility aero-button-primary {
+  border-color: rgba(0, 40, 70, 0.9);
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.42) 0%,
+      rgba(255, 255, 255, 0.18) 48%,
+      rgba(255, 255, 255, 0.04) 50%,
+      rgba(255, 255, 255, 0.16) 100%
+    ),
+    linear-gradient(to bottom, #39a9e6 0%, #1667ad 52%, #0d4a86 100%);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.75),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.4),
+    0 0 16px -2px rgba(47, 155, 255, 0.5),
+    0 1px 2px 0 rgba(0, 0, 0, 0.8);
+}
+
+/* Specular sweep laid over a panel's top-left corner. */
+@utility aero-sheen {
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 52%;
+    border-radius: inherit;
+    background: linear-gradient(
+      105deg,
+      rgba(255, 255, 255, 0.2) 0%,
+      rgba(255, 255, 255, 0.06) 42%,
+      transparent 72%
+    );
+    pointer-events: none;
+  }
+}
+
+/* Hairline divider with a light bottom edge, like a Win7 group separator. */
+@utility aero-rule {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.6);
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.09);
+}
+
+/* Cyan rim used on the active nav item. */
+@utility aero-active {
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(140, 225, 255, 0.26) 0%,
+      rgba(90, 190, 240, 0.12) 48%,
+      rgba(40, 130, 190, 0.07) 50%,
+      rgba(70, 170, 220, 0.14) 100%
+    );
+  border: 1px solid rgba(130, 220, 255, 0.45);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.45),
+    inset 0 0 18px -6px rgba(88, 215, 255, 0.6),
+    0 0 14px -4px rgba(88, 215, 255, 0.4);
+}
+
+@utility aero-glow-text {
+  text-shadow: 0 0 14px rgba(88, 215, 255, 0.55), 0 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+@utility display-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

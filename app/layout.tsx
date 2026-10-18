@@ -1,19 +1,23 @@
 import type { Metadata, Viewport } from 'next';
-import { Anton, Inter } from 'next/font/google';
+import { Exo_2, Titillium_Web } from 'next/font/google';
 import type { ReactNode } from 'react';
 
 import { AmbientBackdrop } from '@/src/presentation/components/AmbientBackdrop';
 import './globals.css';
 import { Providers } from './providers';
 
-const display = Anton({
-  weight: '400',
+// Segoe UI is the real Vista/7 face and is used first when the client has it.
+// Titillium Web (2008) is the era-matched humanist fallback; Exo 2 carries the
+// wider techno display voice that Frutiger Aero layouts leaned on.
+const display = Exo_2({
+  weight: ['300', '500', '700'],
   subsets: ['latin'],
   variable: '--font-display-family',
   display: 'swap',
 });
 
-const body = Inter({
+const body = Titillium_Web({
+  weight: ['300', '400', '600', '700'],
   subsets: ['latin'],
   variable: '--font-body-family',
   display: 'swap',
