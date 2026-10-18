@@ -6,26 +6,27 @@
  * stays crisp at any size and costs nothing to paint.
  */
 
-interface Bloom {
+interface Layer {
+  readonly id: string;
   readonly className: string;
 }
 
-const BLOOMS: readonly Bloom[] = [
+const BLOOMS: readonly Layer[] = [
   // horizon glow, bottom centre — the Aero "light under the glass"
-  { className: 'bottom-[-30vh] left-1/2 h-[70vh] w-[120vw] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgba(47,155,255,0.30),transparent_65%)]' },
+  { id: 'horizon', className: 'bottom-[-30vh] left-1/2 h-[70vh] w-[120vw] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgba(47,155,255,0.30),transparent_65%)]' },
   // cool teal wash, upper right
-  { className: 'right-[-18vw] top-[-14vh] h-[66vh] w-[66vw] bg-[radial-gradient(circle_at_center,rgba(31,227,194,0.16),transparent_62%)] animate-aurora' },
+  { id: 'teal', className: 'right-[-18vw] top-[-14vh] h-[66vh] w-[66vw] bg-[radial-gradient(circle_at_center,rgba(31,227,194,0.16),transparent_62%)] animate-aurora' },
   // azure wash, left
-  { className: 'left-[-22vw] top-[12vh] h-[62vh] w-[62vw] bg-[radial-gradient(circle_at_center,rgba(88,215,255,0.17),transparent_62%)] [animation-delay:-8s] animate-aurora' },
+  { id: 'azure', className: 'left-[-22vw] top-[12vh] h-[62vh] w-[62vw] bg-[radial-gradient(circle_at_center,rgba(88,215,255,0.17),transparent_62%)] [animation-delay:-8s] animate-aurora' },
 ];
 
 // Glossy bubbles. Each is a sphere: dark rim, cyan body, specular hotspot.
-const BUBBLES: readonly string[] = [
-  'left-[8%] top-[62%] size-28 [animation-delay:-2s]',
-  'left-[22%] top-[26%] size-16 [animation-delay:-9s]',
-  'right-[12%] top-[52%] size-36 [animation-delay:-5s]',
-  'right-[26%] top-[16%] size-12 [animation-delay:-14s]',
-  'left-[46%] bottom-[8%] size-20 [animation-delay:-11s]',
+const BUBBLES: readonly Layer[] = [
+  { id: 'b1', className: 'left-[8%] top-[62%] size-28 [animation-delay:-2s]' },
+  { id: 'b2', className: 'left-[22%] top-[26%] size-16 [animation-delay:-9s]' },
+  { id: 'b3', className: 'right-[12%] top-[52%] size-36 [animation-delay:-5s]' },
+  { id: 'b4', className: 'right-[26%] top-[16%] size-12 [animation-delay:-14s]' },
+  { id: 'b5', className: 'left-[46%] bottom-[8%] size-20 [animation-delay:-11s]' },
 ];
 
 export const AmbientBackdrop = () => (
@@ -34,7 +35,7 @@ export const AmbientBackdrop = () => (
     <div className="absolute inset-0 bg-[linear-gradient(to_bottom,#000000_0%,#02060c_42%,#04121f_74%,#06202f_100%)]" />
 
     {BLOOMS.map(bloom => (
-      <div key={bloom.className} className={`absolute blur-[90px] ${bloom.className}`} />
+      <div key={bloom.id} className={`absolute blur-[90px] ${bloom.className}`} />
     ))}
 
     {/* light shaft raking from the top left */}
@@ -42,15 +43,8 @@ export const AmbientBackdrop = () => (
 
     {BUBBLES.map(bubble => (
       <div
-        key={bubble}
-        className={`absolute rounded-full animate-drift ${bubble}`}
-        style={{
-          background:
-            'radial-gradient(circle at 32% 26%, rgba(255,255,255,0.75) 0%, rgba(170,235,255,0.26) 14%, rgba(40,140,200,0.13) 46%, rgba(6,28,44,0.06) 72%)',
-          boxShadow:
-            'inset 0 -6px 14px -6px rgba(120,220,255,0.5), inset 0 4px 10px -4px rgba(255,255,255,0.45), 0 0 26px -6px rgba(88,215,255,0.28)',
-          border: '1px solid rgba(160,230,255,0.16)',
-        }}
+        key={bubble.id}
+        className={`aero-bubble absolute rounded-full animate-drift ${bubble.className}`}
       />
     ))}
 

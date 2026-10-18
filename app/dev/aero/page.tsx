@@ -3,8 +3,8 @@
 import { Search } from 'lucide-react';
 import { useState } from 'react';
 
-import { AeroButton } from '@/src/presentation/components/AeroButton';
-import { AeroInput } from '@/src/presentation/components/AeroInput';
+import { GlassButton } from '@/src/presentation/components/GlassButton';
+import { GlassField } from '@/src/presentation/components/GlassField';
 
 const Row = ({ title, hint, children }: { title: string; hint: string; children: React.ReactNode }) => (
   <section className="flex flex-col gap-3">
@@ -40,24 +40,24 @@ const Page = () => {
       </header>
 
       <Row title="Primary button" hint="Azure Aero fill. Hover lifts brightness and adds the cyan halo.">
-        <Caption label="default"><AeroButton tone="primary">Sign In</AeroButton></Caption>
-        <Caption label="hover"><AeroButton tone="primary" className="aero-button-hover brightness-122">Sign In</AeroButton></Caption>
-        <Caption label="disabled"><AeroButton tone="primary" disabled>Sign In</AeroButton></Caption>
+        <Caption label="default"><GlassButton tone="primary">Sign In</GlassButton></Caption>
+        <Caption label="hover"><GlassButton tone="primary" className="aero-button-hover">Sign In</GlassButton></Caption>
+        <Caption label="disabled"><GlassButton tone="primary" disabled>Sign In</GlassButton></Caption>
       </Row>
 
       <Row title="Secondary button" hint="Graphite glass. Same bevel, no accent fill.">
-        <Caption label="default"><AeroButton>Standard Login</AeroButton></Caption>
-        <Caption label="hover"><AeroButton className="aero-button-hover brightness-122">Standard Login</AeroButton></Caption>
-        <Caption label="disabled"><AeroButton disabled>Standard Login</AeroButton></Caption>
+        <Caption label="default"><GlassButton tone="secondary">Standard Login</GlassButton></Caption>
+        <Caption label="hover"><GlassButton tone="secondary" className="aero-button-hover">Standard Login</GlassButton></Caption>
+        <Caption label="disabled"><GlassButton tone="secondary" disabled>Standard Login</GlassButton></Caption>
       </Row>
 
       <Row title="Sunken input" hint="Inset shadow with a light bottom edge — the inverse of the button bevel.">
-        <div className="w-60"><AeroInput label="User Name:" value={value} onChange={e => setValue(e.target.value)} /></div>
-        <div className="w-60"><AeroInput label="Focused:" defaultValue="focus ring" className="" autoFocus /></div>
-        <div className="w-60"><AeroInput label="Invalid:" defaultValue="bad@" invalid /></div>
-        <div className="w-60"><AeroInput label="Disabled:" defaultValue="locked" disabled /></div>
+        <div className="w-60"><GlassField label="User Name:" value={value} onChange={e => setValue(e.target.value)} /></div>
+        <div className="w-60"><GlassField label="Focused:" defaultValue="focus ring" autoFocus /></div>
+        <div className="w-60"><GlassField label="Invalid:" defaultValue="bad@" invalid /></div>
+        <div className="w-60"><GlassField label="Disabled:" defaultValue="locked" disabled /></div>
         <div className="w-60">
-          <AeroInput label="With icon:" placeholder="Search PreQuit" adornment={<Search size={14} className="text-faint" />} />
+          <GlassField label="With icon:" placeholder="Search PreQuit" adornment={<Search size={14} className="text-faint" />} />
         </div>
       </Row>
 
