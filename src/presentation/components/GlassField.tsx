@@ -37,7 +37,7 @@ export const GlassField = ({
     >
       <input
         id={id}
-        className={`min-w-0 flex-1 text-paper outline-none disabled:cursor-not-allowed ${className}`}
+        className={`min-w-0 flex-1 bg-transparent text-paper outline-none disabled:cursor-not-allowed ${className}`}
         {...rest}
       />
       {adornment}

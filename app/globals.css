@@ -141,9 +141,35 @@
     background: rgb(var(--aero-cyan-rgb) / 0.3);
   }
 
+  /* Firefox paints its own `field` background on inputs and it survives a
+     bare `background: transparent` on some builds, so force it off including
+     the focused and autofilled states, which are the ones that show through. */
   input,
-  textarea {
-    background: transparent;
+  textarea,
+  select {
+    background-color: transparent;
+  }
+
+  input:focus,
+  input:active,
+  textarea:focus {
+    background-color: transparent;
+  }
+
+  /* Chromium paints autofilled inputs a solid pale yellow; the inset shadow
+     trick is the only way to override it. */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--color-paper);
+    -webkit-box-shadow: 0 0 0 1000px rgba(4, 10, 16, 0.96) inset;
+    caret-color: var(--color-paper);
+    transition: background-color 9999s ease-in-out 0s;
+  }
+
+  input:autofill {
+    background-color: transparent;
+    color: var(--color-paper);
   }
 
   input::placeholder,
