@@ -12,10 +12,15 @@
   --color-ink: #000000;
   --color-paper: #ffffff;
 
+  /* channel form so rgba() stops being hand-typed for the accents */
+  --aero-cyan-rgb: 88 215 255;
+  --aero-azure-rgb: 47 155 255;
+  --aero-teal-rgb: 31 227 194;
+
   /* Aero accents — azure through to the Frutiger teal/lime end */
-  --color-aero-cyan: #58d7ff;
-  --color-aero-azure: #2f9bff;
-  --color-aero-teal: #1fe3c2;
+  --color-aero-cyan: rgb(var(--aero-cyan-rgb));
+  --color-aero-azure: rgb(var(--aero-azure-rgb));
+  --color-aero-teal: rgb(var(--aero-teal-rgb));
   --color-aero-lime: #9ced4f;
   --color-aero-deep: #0a3a5c;
 
@@ -42,9 +47,6 @@
   --text-control: 13px;
   --spacing-control: 2.125rem;  /* h-control — Win7 dialog control height */
 
-  /* channel form so rgba() stops being hand-typed for the accents */
-  --aero-cyan-rgb: 88 215 255;
-  --aero-azure-rgb: 47 155 255;
 
   --animate-aurora: aurora 22s ease-in-out infinite alternate;
   --animate-rise: rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -123,7 +125,7 @@
   }
 
   ::selection {
-    background: rgba(88, 215, 255, 0.3);
+    background: rgb(var(--aero-cyan-rgb) / 0.3);
   }
 
   input,
@@ -149,13 +151,13 @@
   input:focus-visible,
   textarea:focus-visible {
     box-shadow:
-      0 0 0 1px rgba(88, 215, 255, 0.85),
-      0 0 14px 0 rgba(88, 215, 255, 0.55);
+      0 0 0 1px rgb(var(--aero-cyan-rgb) / 0.85),
+      0 0 14px 0 rgb(var(--aero-cyan-rgb) / 0.55);
   }
 
   * {
     scrollbar-width: thin;
-    scrollbar-color: rgba(88, 215, 255, 0.28) transparent;
+    scrollbar-color: rgb(var(--aero-cyan-rgb) / 0.28) transparent;
   }
 
   *::-webkit-scrollbar {
@@ -175,7 +177,7 @@
   }
 
   *::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(88, 215, 255, 0.45);
+    background-color: rgb(var(--aero-cyan-rgb) / 0.45);
   }
 }
 
@@ -199,7 +201,7 @@
   box-shadow:
     inset 0 1px 0 0 rgba(255, 255, 255, 0.4),
     inset 0 -1px 0 0 rgba(0, 0, 0, 0.5),
-    inset 0 0 22px -8px rgba(88, 215, 255, 0.22),
+    inset 0 0 22px -8px rgb(var(--aero-cyan-rgb) / 0.22),
     0 18px 48px -22px rgba(0, 0, 0, 0.95);
 }
 
@@ -239,9 +241,9 @@
   box-shadow:
     inset 0 1px 0 0 rgba(255, 255, 255, 0.55),
     inset 0 -1px 0 0 rgba(0, 0, 0, 0.6),
-    inset 0 0 34px -10px rgba(88, 215, 255, 0.3),
+    inset 0 0 34px -10px rgb(var(--aero-cyan-rgb) / 0.3),
     0 30px 80px -28px rgba(0, 0, 0, 1),
-    0 0 42px -18px rgba(47, 155, 255, 0.5);
+    0 0 42px -18px rgb(var(--aero-azure-rgb) / 0.5);
 }
 
 /* Taskbar-style chrome: nav rails and bottom bars. */
@@ -288,12 +290,12 @@
 }
 
 @utility glass-field-focus {
-  border-color: rgba(88, 215, 255, 0.7);
+  border-color: rgb(var(--aero-cyan-rgb) / 0.7);
   box-shadow:
     inset 0 2px 4px 0 rgba(0, 0, 0, 0.6),
     0 1px 0 0 rgba(255, 255, 255, 0.14),
-    0 0 0 1px rgba(88, 215, 255, 0.5),
-    0 0 16px 0 rgba(88, 215, 255, 0.4);
+    0 0 0 1px rgb(var(--aero-cyan-rgb) / 0.5),
+    0 0 16px 0 rgb(var(--aero-cyan-rgb) / 0.4);
 }
 
 /* ─── glossy controls ───────────────────────────────────────── */
@@ -325,8 +327,8 @@
   box-shadow:
     inset 0 1px 0 0 rgba(255, 255, 255, 0.65),
     inset 0 -1px 0 0 rgba(0, 0, 0, 0.5),
-    inset 0 0 20px -4px rgba(88, 215, 255, 0.5),
-    0 0 18px 0 rgba(88, 215, 255, 0.42),
+    inset 0 0 20px -4px rgb(var(--aero-cyan-rgb) / 0.5),
+    0 0 18px 0 rgb(var(--aero-cyan-rgb) / 0.42),
     0 1px 2px 0 rgba(0, 0, 0, 0.8);
 }
 
@@ -345,7 +347,7 @@
   box-shadow:
     inset 0 1px 0 0 rgba(255, 255, 255, 0.75),
     inset 0 -1px 0 0 rgba(0, 0, 0, 0.4),
-    0 0 16px -2px rgba(47, 155, 255, 0.5),
+    0 0 16px -2px rgb(var(--aero-azure-rgb) / 0.5),
     0 1px 2px 0 rgba(0, 0, 0, 0.8);
 }
 
@@ -386,8 +388,8 @@
   border: 1px solid rgba(130, 220, 255, 0.45);
   box-shadow:
     inset 0 1px 0 0 rgba(255, 255, 255, 0.45),
-    inset 0 0 18px -6px rgba(88, 215, 255, 0.6),
-    0 0 14px -4px rgba(88, 215, 255, 0.4);
+    inset 0 0 18px -6px rgb(var(--aero-cyan-rgb) / 0.6),
+    0 0 14px -4px rgb(var(--aero-cyan-rgb) / 0.4);
 }
 
 @utility aero-text-shadow {
@@ -410,7 +412,7 @@
 }
 
 @utility aero-glow-text {
-  text-shadow: 0 0 14px rgba(88, 215, 255, 0.55), 0 1px 2px rgba(0, 0, 0, 0.9);
+  text-shadow: 0 0 14px rgb(var(--aero-cyan-rgb) / 0.55), 0 1px 2px rgba(0, 0, 0, 0.9);
 }
 
 @utility display-title {

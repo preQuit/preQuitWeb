@@ -18,7 +18,7 @@ export const SolarSystem = () => (
 
     {ORBITS.map(orbit => (
       <span
-        key={orbit.color}
+        key={orbit.id}
         className="absolute flex justify-center"
         style={{
           width: orbit.ring,

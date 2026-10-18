@@ -1,13 +1,7 @@
-export const COLORS = {
-  black: '#000000',
-  white: '#FFFFFF',
-  red: '#FF3B30',
-  violet: '#8A2BE2',
-  blue: '#2E7DFF',
-  like: '#FF375F',
-  danger: '#FF453A',
-  failure: '#FF6B6B',
-} as const;
+/**
+ * Geometry only. Colour lives in app/globals.css @theme and is referenced here
+ * through CSS custom properties, so there is exactly one place to change a hue.
+ */
 
 export const SOLAR = {
   sunSize: 120,
@@ -16,6 +10,8 @@ export const SOLAR = {
 } as const;
 
 export interface Orbit {
+  readonly id: string;
+  /** A CSS colour reference, resolved from the @theme token at paint time. */
   readonly color: string;
   readonly ring: number;
   readonly durationMs: number;
@@ -23,7 +19,7 @@ export interface Orbit {
 }
 
 export const ORBITS: readonly Orbit[] = [
-  { color: COLORS.red, ring: SOLAR.rings[0], durationMs: 4000, clockwise: true },
-  { color: COLORS.violet, ring: SOLAR.rings[1], durationMs: 6500, clockwise: false },
-  { color: COLORS.blue, ring: SOLAR.rings[2], durationMs: 9000, clockwise: true },
+  { id: 'red', color: 'var(--color-orbit-red)', ring: SOLAR.rings[0], durationMs: 4000, clockwise: true },
+  { id: 'violet', color: 'var(--color-orbit-violet)', ring: SOLAR.rings[1], durationMs: 6500, clockwise: false },
+  { id: 'blue', color: 'var(--color-orbit-blue)', ring: SOLAR.rings[2], durationMs: 9000, clockwise: true },
 ];

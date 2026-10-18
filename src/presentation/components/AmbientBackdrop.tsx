@@ -13,11 +13,11 @@ interface Layer {
 
 const BLOOMS: readonly Layer[] = [
   // horizon glow, bottom centre — the Aero "light under the glass"
-  { id: 'horizon', className: 'bottom-[-30vh] left-1/2 h-[70vh] w-[120vw] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgba(47,155,255,0.30),transparent_65%)]' },
+  { id: 'horizon', className: 'bottom-[-30vh] left-1/2 h-[70vh] w-[120vw] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgb(var(--aero-azure-rgb)/0.30),transparent_65%)]' },
   // cool teal wash, upper right
-  { id: 'teal', className: 'right-[-18vw] top-[-14vh] h-[66vh] w-[66vw] bg-[radial-gradient(circle_at_center,rgba(31,227,194,0.16),transparent_62%)] animate-aurora' },
+  { id: 'teal', className: 'right-[-18vw] top-[-14vh] h-[66vh] w-[66vw] bg-[radial-gradient(circle_at_center,rgb(var(--aero-teal-rgb)/0.16),transparent_62%)] animate-aurora' },
   // azure wash, left
-  { id: 'azure', className: 'left-[-22vw] top-[12vh] h-[62vh] w-[62vw] bg-[radial-gradient(circle_at_center,rgba(88,215,255,0.17),transparent_62%)] [animation-delay:-8s] animate-aurora' },
+  { id: 'azure', className: 'left-[-22vw] top-[12vh] h-[62vh] w-[62vw] bg-[radial-gradient(circle_at_center,rgb(var(--aero-cyan-rgb)/0.17),transparent_62%)] [animation-delay:-8s] animate-aurora' },
 ];
 
 // Glossy bubbles. Each is a sphere: dark rim, cyan body, specular hotspot.
@@ -39,7 +39,7 @@ export const AmbientBackdrop = () => (
     ))}
 
     {/* light shaft raking from the top left */}
-    <div className="absolute inset-0 bg-[linear-gradient(105deg,rgba(146,225,255,0.10)_0%,transparent_38%)]" />
+    <div className="absolute inset-0 bg-[linear-gradient(105deg,rgb(var(--aero-cyan-rgb)/0.10)_0%,transparent_38%)]" />
 
     {BUBBLES.map(bubble => (
       <div
