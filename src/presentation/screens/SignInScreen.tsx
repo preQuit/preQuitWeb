@@ -72,7 +72,7 @@ export const SignInScreen = () => {
 
         <FormError message={failure} />
 
-        <GlassButton type="submit" tone="solid" disabled={isSigningIn} className="mt-2">
+        <GlassButton type="submit" tone="primary" disabled={isSigningIn} className="mt-2">
           {isSigningIn ? 'Logging in…' : 'Log In'}
         </GlassButton>
 

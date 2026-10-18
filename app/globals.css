@@ -44,8 +44,14 @@
 
   --radius-glass: 8px;
   --radius-control: 5px;
+
+  /* Two control scales. `control` is the dense Win7 dialog metric; `action` is
+     the larger web target used for forms. Both live here so no component
+     hardcodes a height. */
   --text-control: 13px;
-  --spacing-control: 2.125rem;  /* h-control — Win7 dialog control height */
+  --spacing-control: 2.125rem;
+  --text-action: 0.875rem;
+  --spacing-action: 2.75rem;
 
 
   --animate-aurora: aurora 22s ease-in-out infinite alternate;

@@ -61,6 +61,18 @@ const Page = () => {
         </div>
       </Row>
 
+      <Row title="Other tones" hint="outline and quiet — flat, no specular band.">
+        <Caption label="outline"><GlassButton tone="outline">Cancel</GlassButton></Caption>
+        <Caption label="quiet"><GlassButton tone="quiet">Dismiss</GlassButton></Caption>
+        <Caption label="outline disabled"><GlassButton tone="outline" disabled>Cancel</GlassButton></Caption>
+      </Row>
+
+      <Row title="Control scale" hint='size="control" — the dense Win7 dialog metric, for toolbars and chrome.'>
+        <Caption label="primary"><GlassButton tone="primary" size="control">Apply</GlassButton></Caption>
+        <Caption label="secondary"><GlassButton tone="secondary" size="control">Browse…</GlassButton></Caption>
+        <div className="w-52"><GlassField size="control" label="Dense field:" defaultValue="toolbar scale" /></div>
+      </Row>
+
       <Row title="Panel + active nav chip" hint="glass-raised for dialogs, aero-active for the selected rail item.">
         <div className="glass-raised aero-sheen w-64 rounded-[8px] p-4">
           <p className="text-[13px] font-semibold text-paper">Raised panel</p>

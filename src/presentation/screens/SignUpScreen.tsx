@@ -151,7 +151,7 @@ export const SignUpScreen = () => {
         <FormError message={failure} />
         <FormNotice message={notice} />
 
-        <GlassButton type="submit" tone="solid" disabled={isSigningUp} className="mt-1">
+        <GlassButton type="submit" tone="primary" disabled={isSigningUp} className="mt-1">
           {isSigningUp ? 'Creating…' : 'Create Account'}
         </GlassButton>
 

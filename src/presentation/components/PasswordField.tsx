@@ -1,11 +1,11 @@
 'use client';
 
 import { Eye, EyeOff } from 'lucide-react';
-import { useState, type InputHTMLAttributes } from 'react';
+import { useState } from 'react';
 
-import { GlassField } from './GlassField';
+import { GlassField, type GlassFieldProps } from './GlassField';
 
-export type PasswordFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>;
+export type PasswordFieldProps = Omit<GlassFieldProps, 'type' | 'adornment'>;
 
 export const PasswordField = (props: PasswordFieldProps) => {
   const [revealed, setRevealed] = useState(false);

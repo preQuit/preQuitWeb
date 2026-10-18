@@ -61,7 +61,7 @@ export const ResetPasswordScreen = () => {
         <FormError message={failure} />
         <FormNotice message={notice} />
 
-        <GlassButton type="submit" tone="solid" disabled={request.isPending} className="mt-2">
+        <GlassButton type="submit" tone="primary" disabled={request.isPending} className="mt-2">
           {request.isPending ? 'Sending…' : 'Send reset link'}
         </GlassButton>
       </form>
