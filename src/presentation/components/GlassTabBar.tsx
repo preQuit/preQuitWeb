@@ -1,32 +1,22 @@
 'use client';
 
-import { Home, MessagesSquare, User, Users, type LucideIcon } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-interface TabDefinition {
-  readonly href: string;
-  readonly label: string;
-  readonly icon: LucideIcon;
-}
+import { isCurrent, PRIMARY_NAV } from '../navigation/navItems';
 
-const TABS: readonly TabDefinition[] = [
-  { href: '/home', label: 'Home', icon: Home },
-  { href: '/social', label: 'Social', icon: MessagesSquare },
-  { href: '/chats', label: 'Friends', icon: Users },
-  { href: '/profile', label: 'Profile', icon: User },
-];
-
-const isCurrent = (pathname: string, href: string): boolean =>
-  pathname === href || pathname.startsWith(`${href}/`);
-
+/**
+ * Small-screen navigation. Renders the same destinations as SideRail from the
+ * same list, so a route can never be called two different things depending on
+ * viewport width.
+ */
 export const GlassTabBar = () => {
   const pathname = usePathname();
 
   return (
-    <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex justify-center px-6 pb-5">
+    <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex justify-center px-6 pb-5 md:hidden">
       <div className="glass-bar pointer-events-auto flex h-17 w-full max-w-lg items-center justify-around rounded-[34px] px-2">
-        {TABS.map(({ href, label, icon: Icon }) => {
+        {PRIMARY_NAV.map(({ href, label, icon: Icon }) => {
           const current = isCurrent(pathname, href);
           return (
             <Link
@@ -36,8 +26,8 @@ export const GlassTabBar = () => {
               className="relative flex h-full flex-1 flex-col items-center justify-center gap-0.5"
             >
               <span
-                className={`absolute size-11 rounded-full border-[1.5px] border-white/25 bg-white/15 transition-all duration-200 ${
-                  current ? '-translate-y-1.5 scale-100 opacity-100' : 'scale-60 opacity-0'
+                className={`absolute size-11 rounded-full transition-all duration-200 ${
+                  current ? 'aero-active -translate-y-1.5 scale-100 opacity-100' : 'scale-60 opacity-0'
                 }`}
               />
               <Icon
