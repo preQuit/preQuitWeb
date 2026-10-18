@@ -16,6 +16,7 @@ import { PostCard } from '../components/PostCard';
 import { ScreenHeader } from '../components/ScreenHeader';
 import { Spinner } from '../components/Spinner';
 import { useFeed } from '../hooks/useFeed';
+import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 import { useOpenConversation } from '../hooks/useOpenConversation';
 import { conversationRoute } from '../navigation/routes';
 
@@ -34,8 +35,19 @@ export const SocialScreen = () => {
   const router = useRouter();
   const [surface, setSurface] = useState<FeedSurfaceValue>(FeedSurface.HOME);
   const [activePost, setActivePost] = useState<Post | null>(null);
-  const { items, isLoading, isRefreshing, error, refresh, toggleLike, toggleSave } =
-    useFeed(surface);
+  const {
+    items,
+    isLoading,
+    isRefreshing,
+    isLoadingMore,
+    hasMore,
+    error,
+    refresh,
+    loadMore,
+    toggleLike,
+    toggleSave,
+  } = useFeed(surface);
+  const sentinel = useInfiniteScroll<HTMLDivElement>(loadMore, hasMore);
   const { open } = useOpenConversation();
 
   const openAuthorChat = async (author: PostAuthor) => {
@@ -107,7 +119,17 @@ export const SocialScreen = () => {
               />
             ))}
           </div>
-          <p className="py-6 text-center text-[13px] text-muted">You are all caught up</p>
+          <div ref={sentinel} aria-hidden className="h-px" />
+
+          {isLoadingMore ? (
+            <div className="flex justify-center py-6">
+              <Spinner />
+            </div>
+          ) : (
+            <p className="py-6 text-center text-[13px] text-muted">
+              {hasMore ? 'Loading more…' : 'You are all caught up'}
+            </p>
+          )}
         </>
       )}
 
