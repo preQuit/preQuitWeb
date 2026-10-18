@@ -2,6 +2,8 @@ import { apiConfig, type ApiConfig } from '../../data/config/apiConfig';
 import { AxiosHttpClient } from '../../data/http/AxiosHttpClient';
 import type { HttpClient } from '../../data/http/HttpClient';
 import { HttpAuthRepository } from '../../data/repositories/HttpAuthRepository';
+import { CreatePostUseCase } from '../../application/feed/CreatePostUseCase';
+import { HttpComposerRepository } from '../../data/repositories/HttpComposerRepository';
 import { HttpFeedRepository } from '../../data/repositories/HttpFeedRepository';
 import { HttpMessagingRepository } from '../../data/repositories/HttpMessagingRepository';
 import { HttpPostRepository } from '../../data/repositories/HttpPostRepository';
@@ -11,6 +13,7 @@ import { HttpSocialRepository } from '../../data/repositories/HttpSocialReposito
 import { BrowserSessionRepository } from '../../data/storage/BrowserSessionRepository';
 
 import type { AuthRepository } from '../../domain/repositories/AuthRepository';
+import type { ComposerRepository } from '../../domain/repositories/ComposerRepository';
 import type { FeedRepository } from '../../domain/repositories/FeedRepository';
 import type { MessagingRepository } from '../../domain/repositories/MessagingRepository';
 import type { PostRepository } from '../../domain/repositories/PostRepository';
@@ -45,6 +48,7 @@ export interface Repositories {
   readonly auth: AuthRepository;
   readonly feed: FeedRepository;
   readonly post: PostRepository;
+  readonly composer: ComposerRepository;
   readonly search: SearchRepository;
   readonly messaging: MessagingRepository;
   readonly profile: ProfileRepository;
@@ -59,6 +63,7 @@ export interface UseCases {
   readonly checkHandle: CheckHandleUseCase;
   readonly requestPasswordReset: RequestPasswordResetUseCase;
   readonly loadFeed: LoadFeedUseCase;
+  readonly createPost: CreatePostUseCase;
   readonly toggleLike: ToggleLikeUseCase;
   readonly toggleSave: ToggleSaveUseCase;
   readonly loadComments: LoadCommentsUseCase;
@@ -95,6 +100,7 @@ const buildRepositories = (http: HttpClient): Repositories => ({
   auth: new HttpAuthRepository(http),
   feed: new HttpFeedRepository(http),
   post: new HttpPostRepository(http),
+  composer: new HttpComposerRepository(http),
   search: new HttpSearchRepository(http),
   messaging: new HttpMessagingRepository(http),
   profile: new HttpProfileRepository(http),
@@ -102,6 +108,7 @@ const buildRepositories = (http: HttpClient): Repositories => ({
 });
 
 const buildUseCases = (repositories: Repositories, session: SessionRepository): UseCases => ({
+  createPost: new CreatePostUseCase(repositories.composer),
   signIn: new SignInUseCase(repositories.auth, session),
   signUp: new SignUpUseCase(repositories.auth),
   signOut: new SignOutUseCase(repositories.auth, session),
