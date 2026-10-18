@@ -39,7 +39,7 @@ export const AmbientBackdrop = () => (
     ))}
 
     {/* light shaft raking from the top left */}
-    <div className="absolute inset-0 bg-[linear-gradient(105deg,rgb(var(--aero-cyan-rgb)/0.10)_0%,transparent_38%)]" />
+    <div className="absolute inset-0 bg-[linear-gradient(105deg,rgb(var(--aero-sky-rgb)/0.10)_0%,transparent_38%)]" />
 
     {BUBBLES.map(bubble => (
       <div

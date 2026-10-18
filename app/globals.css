@@ -16,6 +16,7 @@
   --aero-cyan-rgb: 88 215 255;
   --aero-azure-rgb: 47 155 255;
   --aero-teal-rgb: 31 227 194;
+  --aero-sky-rgb: 146 225 255;   /* pale shaft blue, lighter than the cyan accent */
 
   /* Aero accents — azure through to the Frutiger teal/lime end */
   --color-aero-cyan: rgb(var(--aero-cyan-rgb));
