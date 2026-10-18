@@ -364,13 +364,16 @@
     content: "";
     position: absolute;
     inset: 0 0 auto 0;
-    height: 52%;
+    height: 62%;
     border-radius: inherit;
+    /* Fades to nothing at its own edge; a hard stop here reads as a seam
+       across the middle of the panel. */
     background: linear-gradient(
-      105deg,
-      rgba(255, 255, 255, 0.2) 0%,
-      rgba(255, 255, 255, 0.06) 42%,
-      transparent 72%
+      160deg,
+      rgba(255, 255, 255, 0.16) 0%,
+      rgba(255, 255, 255, 0.05) 38%,
+      rgba(255, 255, 255, 0.015) 70%,
+      transparent 100%
     );
     pointer-events: none;
   }
