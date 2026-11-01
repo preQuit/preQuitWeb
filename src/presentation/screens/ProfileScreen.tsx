@@ -1,8 +1,8 @@
 'use client';
 
-import { Heart, ImageOff, Inbox, Pencil, RefreshCw, ShieldOff } from 'lucide-react';
+import { Heart, ImageOff, Inbox, Pencil, RefreshCw, ShieldOff, UserX } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 
 import type { Post } from '../../domain/entities/Post';
@@ -11,6 +11,7 @@ import { messageOf } from '../../domain/errors/AppError';
 import { CommentSheet } from '../components/CommentSheet';
 import { EmptyState } from '../components/EmptyState';
 import { PostCard } from '../components/PostCard';
+import { ScreenHeader } from '../components/ScreenHeader';
 import { SectionLabel } from '../components/SectionLabel';
 import { Spinner } from '../components/Spinner';
 import { formatCount } from '../format';
@@ -57,30 +58,41 @@ const SocialLink = ({ icon: Icon, label, href }: SocialLinkProps) => (
   </Link>
 );
 
+const ProfileShell = ({ children }: { readonly children: ReactNode }) => (
+  <main
+    id="main-content"
+    tabIndex={-1}
+    className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col"
+  >
+    <ScreenHeader title="Profile" />
+    {children}
+  </main>
+);
+
 export const ProfileScreen = () => {
   const { profile, posts, isLoading, isRefreshing, error, refresh } = useMyProfile();
   const [activePost, setActivePost] = useState<Post | null>(null);
 
   if (isLoading) {
     return (
-      <div className="flex min-h-dvh items-center justify-center">
-        <Spinner />
-      </div>
+      <ProfileShell>
+        <div className="flex flex-1 items-center justify-center py-20">
+          <Spinner />
+        </div>
+      </ProfileShell>
     );
   }
 
   if (!profile) {
     return (
-      <div className="flex min-h-dvh items-center justify-center px-8">
-        <p className="text-center text-sm text-muted">
-          {messageOf(error, 'Profile unavailable')}
-        </p>
-      </div>
+      <ProfileShell>
+        <EmptyState icon={UserX} title="Profile unavailable" body={messageOf(error, 'Could not load your profile')} />
+      </ProfileShell>
     );
   }
 
   return (
-    <main className="flex flex-col pt-10">
+    <ProfileShell>
       <section className="flex flex-col items-center px-6">
         <span className="surface-raised flex size-30 items-center justify-center rounded-full text-5xl font-extrabold text-paper shadow-[0_0_48px_rgb(var(--cobalt-rgb)/0.45)]">
           {profile.avatarUrl ? (
@@ -172,7 +184,7 @@ export const ProfileScreen = () => {
             body="Everything you publish will show up here."
           />
         ) : (
-          <div className="flex flex-col gap-4 px-4">
+          <div className="grid grid-cols-1 gap-4 px-4 lg:grid-cols-2">
             {posts.map(post => (
               <PostCard key={post.id} post={post} onOpenComments={setActivePost} />
             ))}
@@ -181,6 +193,6 @@ export const ProfileScreen = () => {
       </section>
 
       <CommentSheet post={activePost} onClose={() => setActivePost(null)} />
-    </main>
+    </ProfileShell>
   );
 };

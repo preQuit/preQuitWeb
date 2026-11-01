@@ -1,12 +1,7 @@
 export const instant = false;
 
-import { RequireGuest } from '@/src/presentation/navigation/RouteGuard';
-import { SignInScreen } from '@/src/presentation/screens/SignInScreen';
+import { RootGate } from './RootGate';
 
-const Page = () => (
-  <RequireGuest>
-    <SignInScreen />
-  </RequireGuest>
-);
+const Page = () => <RootGate />;
 
 export default Page;

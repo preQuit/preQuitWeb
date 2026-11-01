@@ -2,6 +2,7 @@
 
 import { MessagesSquare, Search as SearchIcon } from 'lucide-react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
 import { nameOf, type Conversation } from '../../domain/entities/Conversation';
@@ -16,9 +17,10 @@ import { conversationRoute } from '../navigation/routes';
 
 interface ConversationRowProps {
   readonly conversation: Conversation;
+  readonly active: boolean;
 }
 
-const ConversationRow = ({ conversation }: ConversationRowProps) => {
+const ConversationRow = ({ conversation, active }: ConversationRowProps) => {
   const unread = conversation.unreadCount > 0;
   const name = nameOf(conversation);
   const preview = conversation.lastMessage?.body ?? 'No messages yet';
@@ -28,7 +30,10 @@ const ConversationRow = ({ conversation }: ConversationRowProps) => {
     <li>
       <Link
         href={conversationRoute(conversation.id)}
-        className="flex items-center gap-3.5 px-4 py-3 transition-colors hover:bg-cobalt/10"
+        aria-current={active ? 'page' : undefined}
+        className={`flex items-center gap-3.5 px-4 py-3 transition-colors hover:bg-cobalt/10 ${
+          active ? 'bg-cobalt/15' : ''
+        }`}
       >
         <Avatar name={name} url={conversation.peer?.avatarUrl} size="lg" />
         <div className="min-w-0 flex-1">
@@ -54,7 +59,15 @@ const ConversationRow = ({ conversation }: ConversationRowProps) => {
   );
 };
 
-export const ChatsScreen = () => {
+/**
+ * The list half of chat's master-detail split. Standalone on its own at
+ * `<lg` (rendered by ChatsScreen below a ScreenHeader); the persistent
+ * master pane at `lg+` (rendered by the `/chats` layout, which supplies its
+ * own ScreenHeader once rather than duplicating this one's).
+ */
+export const ConversationList = () => {
+  const params = useParams<{ conversationId?: string }>();
+  const openConversationId = params?.conversationId;
   const [query, setQuery] = useState('');
   const { conversations, isLoading, error } = useConversations();
 
@@ -67,9 +80,7 @@ export const ChatsScreen = () => {
   }, [conversations, query]);
 
   return (
-    <main className="flex flex-col">
-      <ScreenHeader title="Chats" />
-
+    <div className="flex flex-1 flex-col">
       <div className="surface mx-4 mb-3 flex h-11 items-center gap-2 rounded-full px-3.5 transition-colors focus-within:border-cobalt">
         <SearchIcon size={17} className="shrink-0 text-faint" />
         <input
@@ -98,12 +109,43 @@ export const ChatsScreen = () => {
           }
         />
       ) : (
-        <ul className="flex flex-col divide-y divide-line">
+        <ul className="flex flex-col divide-y divide-line overflow-y-auto">
           {visible.map(conversation => (
-            <ConversationRow key={conversation.id} conversation={conversation} />
+            <ConversationRow
+              key={conversation.id}
+              conversation={conversation}
+              active={conversation.id === openConversationId}
+            />
           ))}
         </ul>
       )}
-    </main>
+    </div>
   );
 };
+
+/**
+ * `/chats`. Below `lg` this is the whole screen (header + list). At `lg+`
+ * the `/chats` layout already shows the list as a persistent master pane,
+ * so this becomes the empty detail-pane prompt instead of a second copy of
+ * the same list — see `app/(app)/chats/layout.tsx`.
+ *
+ * No pagination here: useConversations (owned by another phase) returns a
+ * single flat page with no cursor/hasMore for useInfiniteScroll to call.
+ * Wiring real pagination needs that hook converted to useInfiniteQuery —
+ * reported, not patched around here.
+ */
+export const ChatsScreen = () => (
+  <main id="main-content" tabIndex={-1} className="flex min-h-dvh flex-col">
+    <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col lg:hidden">
+      <ScreenHeader title="Chats" />
+      <ConversationList />
+    </div>
+    <div className="hidden flex-1 items-center justify-center lg:flex">
+      <EmptyState
+        icon={MessagesSquare}
+        title="Select a conversation"
+        body="Choose someone from the list to see your messages."
+      />
+    </div>
+  </main>
+);

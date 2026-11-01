@@ -1,13 +1,15 @@
 'use client';
 
-import { ChevronLeft, Send } from 'lucide-react';
+import { AlertCircle, ChevronLeft, MessageCircle, Send } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 
 import { nameOf } from '../../domain/entities/Conversation';
+import { messageOf } from '../../domain/errors/AppError';
 import { MessageDelivery, type Message } from '../../domain/entities/Message';
 import { Avatar } from '../components/Avatar';
+import { EmptyState } from '../components/EmptyState';
 import { Spinner } from '../components/Spinner';
 import { formatClock } from '../format';
 import { useConversation } from '../hooks/useConversation';
@@ -45,7 +47,7 @@ export const DirectMessageScreen = () => {
   const params = useParams<{ conversationId: string }>();
   const conversationId = params.conversationId ?? null;
   const { conversations } = useConversations();
-  const { messages, isLoading, isSending, send } = useConversation(conversationId);
+  const { messages, isLoading, isSending, error, send } = useConversation(conversationId);
   const [draft, setDraft] = useState('');
   const bottom = useRef<HTMLDivElement>(null);
 
@@ -65,13 +67,15 @@ export const DirectMessageScreen = () => {
     await send(body);
   };
 
+  const showEmpty = !isLoading && !error && messages.length === 0;
+
   return (
-    <main className="flex min-h-dvh flex-col">
+    <main id="main-content" tabIndex={-1} className="flex min-h-dvh flex-col">
       <header className="sticky top-0 z-20 flex items-center gap-3 border-b border-line bg-ink px-3 py-3">
         <Link
           href={ROUTES.CHATS}
           aria-label="Back to chats"
-          className="text-paper transition-opacity hover:opacity-70"
+          className="text-paper transition-opacity hover:opacity-70 lg:hidden"
         >
           <ChevronLeft size={26} />
         </Link>
@@ -84,11 +88,19 @@ export const DirectMessageScreen = () => {
         </div>
       </header>
 
-      <div className="flex flex-1 flex-col justify-end px-3 py-4">
+      <div className="mx-auto flex w-full max-w-[640px] flex-1 flex-col justify-end px-3 py-4">
         {isLoading ? (
           <div className="flex justify-center py-16">
             <Spinner />
           </div>
+        ) : error ? (
+          <EmptyState
+            icon={AlertCircle}
+            title="Could not load this conversation"
+            body={messageOf(error, 'Could not load this conversation')}
+          />
+        ) : showEmpty ? (
+          <EmptyState icon={MessageCircle} title="Say hello" body="No messages yet — break the ice." />
         ) : (
           <ul className="flex flex-col gap-2">
             {messages.map(message => (
@@ -101,24 +113,26 @@ export const DirectMessageScreen = () => {
 
       <form
         onSubmit={submit}
-        className="sticky bottom-0 flex items-end gap-2 border-t border-line bg-ink px-3 py-3 pb-24"
+        className="tabbar-clear sticky bottom-0 border-t border-line bg-ink px-3 pt-3 md:pb-3"
       >
-        <input
-          value={draft}
-          onChange={event => setDraft(event.target.value)}
-          placeholder="Message"
-          aria-label="Message"
-          autoComplete="off"
-          className="field h-11 min-w-0 flex-1 rounded-full px-4 text-[15px] text-paper outline-none focus:field-focus"
-        />
-        <button
-          type="submit"
-          disabled={isSending || draft.trim().length === 0}
-          aria-label="Send message"
-          className="flex size-11 shrink-0 items-center justify-center rounded-full bg-lime text-ink transition-opacity disabled:opacity-40"
-        >
-          {isSending ? <Spinner size="sm" /> : <Send size={18} />}
-        </button>
+        <div className="mx-auto flex w-full max-w-[640px] items-end gap-2">
+          <input
+            value={draft}
+            onChange={event => setDraft(event.target.value)}
+            placeholder="Message"
+            aria-label="Message"
+            autoComplete="off"
+            className="field h-11 min-w-0 flex-1 rounded-full px-4 text-[15px] text-paper outline-none focus:field-focus"
+          />
+          <button
+            type="submit"
+            disabled={isSending || draft.trim().length === 0}
+            aria-label="Send message"
+            className="flex size-11 shrink-0 items-center justify-center rounded-full bg-lime text-ink transition-opacity disabled:opacity-40"
+          >
+            {isSending ? <Spinner size="sm" /> : <Send size={18} />}
+          </button>
+        </div>
       </form>
     </main>
   );

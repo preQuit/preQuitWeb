@@ -42,9 +42,12 @@ export const SideRail = ({ onCompose }: SideRailProps) => {
   const pathname = usePathname();
 
   return (
-    <nav className="bar fixed inset-y-0 left-0 z-30 hidden w-rail flex-col gap-1 border-y-0 border-l-0 px-3 py-5 md:flex xl:w-rail-wide">
+    <nav
+      aria-label="Primary"
+      className="bar fixed inset-y-0 left-0 z-30 hidden w-rail flex-col gap-1 border-y-0 border-l-0 px-3 py-5 md:flex xl:w-rail-wide"
+    >
       <Link
-        href={ROUTES.SOCIAL}
+        href={ROUTES.FEED}
         className="mb-4 flex items-center gap-3 px-1 transition-opacity hover:opacity-80"
       >
         <Emblem size={34} className="shrink-0" />

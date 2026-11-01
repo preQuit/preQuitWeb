@@ -5,6 +5,7 @@ import { Search as SearchIcon, SearchX, Tag, X } from 'lucide-react';
 import type { Topic } from '../../domain/entities/Topic';
 import { EmptyState } from '../components/EmptyState';
 import { PostCard } from '../components/PostCard';
+import { ScreenHeader } from '../components/ScreenHeader';
 import { SectionLabel } from '../components/SectionLabel';
 import { Spinner } from '../components/Spinner';
 import { useSearch } from '../hooks/useSearch';
@@ -20,7 +21,7 @@ const TopicTag = ({ topic }: TopicTagProps) => (
   </span>
 );
 
-export const HomeScreen = () => {
+export const SearchScreen = () => {
   const { query, setQuery, clear, isActive, isSearching, results, trendingTopics } = useSearch();
 
   const topics = isActive ? results.topics : trendingTopics;
@@ -28,10 +29,14 @@ export const HomeScreen = () => {
   const nothingFound = isActive && !isSearching && topics.length === 0 && posts.length === 0;
 
   return (
-    <main className="flex flex-col px-6 pt-10">
-      <h1 className="display-title text-center text-[44px] text-paper">PreQuit</h1>
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="mx-auto flex min-h-dvh w-full max-w-4xl flex-col"
+    >
+      <ScreenHeader title="Search" />
 
-      <div className="surface mt-5 flex h-14 items-center gap-2.5 rounded-2xl px-4 transition-colors focus-within:border-cobalt">
+      <div className="surface flex h-14 items-center gap-2.5 rounded-2xl px-4 transition-colors focus-within:border-cobalt">
         <SearchIcon size={20} className="shrink-0 text-faint" />
         <input
           type="search"
@@ -72,8 +77,8 @@ export const HomeScreen = () => {
       ) : null}
 
       {posts.length > 0 ? (
-        <section className="mt-7 flex flex-col gap-4">
-          <SectionLabel>Posts</SectionLabel>
+        <section className="mt-7 flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:gap-5">
+          <SectionLabel className="lg:col-span-2">Posts</SectionLabel>
           {posts.map(post => (
             <PostCard key={post.id} post={post} />
           ))}

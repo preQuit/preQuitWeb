@@ -333,6 +333,26 @@
   }
 }
 
+/* The one clearance number for GlassTabBar (h-17 + pb-5), owned here so a
+   scrolling screen's own padding and DirectMessageScreen's sticky composer
+   never invent two different numbers for the same gap again. Pair with
+   `md:pb-0` at every call site — above `md` GlassTabBar is `md:hidden`, so
+   the clearance has nothing to clear. */
+@utility tabbar-clear {
+  padding-bottom: 7rem;
+}
+
+/*
+ * Overlay z-index scale. Pick a slot before adding a new layer — do not
+ * invent a number inline.
+ *   z-20  sticky in-page chrome (DirectMessageScreen header)
+ *   z-30  app navigation (SideRail, GlassTabBar)
+ *   z-40  secondary overlay (CommentSheet)
+ *   z-50  primary overlay (ComposerDialog; a future edit-profile dialog
+ *         shares this tier — only one primary-tier dialog is ever open)
+ *   z-60  reserved for a future toast/notification system
+ */
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
