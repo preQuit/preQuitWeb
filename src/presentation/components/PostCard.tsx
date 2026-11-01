@@ -1,34 +1,61 @@
 'use client';
 
-import { Bookmark, Heart, MessageCircle } from 'lucide-react';
+import { Bookmark, Heart, MessageCircle, MoreHorizontal } from 'lucide-react';
 import { memo, useState } from 'react';
 
 import type { Post, PostAuthor } from '../../domain/entities/Post';
+import { getTelemetryClient } from '../../data/telemetry/TelemetryClient';
+import { useImpressionTracking } from '../hooks/useImpressionTracking';
 import { formatCount, formatRelative } from '../format';
 import { Avatar } from './Avatar';
 
 export interface PostCardProps {
   readonly post: Post;
+  readonly surface?: string | null;
   onToggleLike?(postId: string): void;
   onToggleSave?(postId: string): void;
   onOpenAuthor?(author: PostAuthor): void;
   onOpenComments?(post: Post): void;
+  onHide?(postId: string): void;
+  onNotInterested?(postId: string): void;
 }
 
 const PostCardView = ({
   post,
+  surface = null,
   onToggleLike,
   onToggleSave,
   onOpenAuthor,
   onOpenComments,
+  onHide,
+  onNotInterested,
 }: PostCardProps) => {
   const [mediaFailed, setMediaFailed] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+  const cardRef = useImpressionTracking<HTMLElement>(post.id, { surface });
   const { author, counts, viewer } = post;
   const image = post.media[0];
   const published = formatRelative(post.publishedAt);
 
+  if (dismissed) return null;
+
+  const handleHide = (): void => {
+    setMenuOpen(false);
+    setDismissed(true);
+    if (onHide) onHide(post.id);
+    else void getTelemetryClient().hidePost(post.id);
+  };
+
+  const handleNotInterested = (): void => {
+    setMenuOpen(false);
+    setDismissed(true);
+    if (onNotInterested) onNotInterested(post.id);
+    else void getTelemetryClient().markNotInterested(post.id);
+  };
+
   return (
-    <article className="surface animate-rise overflow-hidden rounded-card">
+    <article ref={cardRef} className="surface animate-rise overflow-hidden rounded-card">
       <header className="flex items-center gap-3 px-4 py-3">
         <button
           type="button"
@@ -45,6 +72,38 @@ const PostCardView = ({
           </span>
         </button>
         {published ? <span className="text-xs text-muted">{published}</span> : null}
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-label="Post options"
+            aria-expanded={menuOpen}
+            className="text-muted transition-colors hover:text-paper"
+          >
+            <MoreHorizontal size={18} />
+          </button>
+          {menuOpen ? (
+            <>
+              <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
+              <div className="surface-raised absolute right-0 z-20 mt-1 w-44 overflow-hidden rounded-xl">
+                <button
+                  type="button"
+                  onClick={handleHide}
+                  className="block w-full px-3.5 py-2.5 text-left text-[13px] text-paper hover:bg-surface-fill"
+                >
+                  Hide this post
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNotInterested}
+                  className="block w-full px-3.5 py-2.5 text-left text-[13px] text-paper hover:bg-surface-fill"
+                >
+                  Not interested
+                </button>
+              </div>
+            </>
+          ) : null}
+        </div>
       </header>
 
       {post.reason?.label ? (

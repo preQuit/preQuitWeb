@@ -15,7 +15,18 @@ const RECONNECTION_DELAY_MAX_MS = 10_000;
 // one interval instead of leaving a dead connection re-authenticating with a stale token.
 const TOKEN_WATCH_MS = 15_000;
 
-const REALTIME_EVENTS = ['message:new', 'message:read', 'notification:new'] as const;
+// Matches the server's typingTtlMs default: a start resent inside this window is a
+// continuation (no re-emit), and the idle timeout fires comfortably before the
+// server's own TTL would, so the listener never sees a server-driven auto-stop.
+const TYPING_THROTTLE_MS = 2_000;
+const TYPING_IDLE_MS = 4_000;
+
+const REALTIME_EVENTS = ['message:new', 'message:read', 'notification:new', 'typing:update', 'presence:update'] as const;
+
+interface TypingState {
+  lastSentAt: number;
+  idleTimer: ReturnType<typeof setTimeout> | null;
+}
 
 export interface SocketIoRealtimeClientOptions {
   readonly url: string;
@@ -30,6 +41,7 @@ export class SocketIoRealtimeClient implements RealtimeClient {
   private statusValue: RealtimeConnectionStatus = 'idle';
   private readonly statusListeners = new Set<(status: RealtimeConnectionStatus) => void>();
   private readonly eventListeners = new Map<string, Set<(payload: unknown) => void>>();
+  private readonly typingState = new Map<string, TypingState>();
   private tokenWatcher: ReturnType<typeof setInterval> | null = null;
   private lastKnownToken: string | null = null;
   private boundOnVisible: (() => void) | null = null;
@@ -109,9 +121,46 @@ export class SocketIoRealtimeClient implements RealtimeClient {
     };
   }
 
+  notifyTyping(conversationId: string): void {
+    const state = this.typingState.get(conversationId) ?? { lastSentAt: 0, idleTimer: null };
+    const now = Date.now();
+    if (now - state.lastSentAt >= TYPING_THROTTLE_MS) {
+      this.socket?.emit('typing:start', conversationId);
+      state.lastSentAt = now;
+    }
+    if (state.idleTimer) clearTimeout(state.idleTimer);
+    state.idleTimer = setTimeout(() => this.stopTyping(conversationId), TYPING_IDLE_MS);
+    this.typingState.set(conversationId, state);
+  }
+
+  stopTyping(conversationId: string): void {
+    const state = this.typingState.get(conversationId);
+    if (state?.idleTimer) clearTimeout(state.idleTimer);
+    this.typingState.delete(conversationId);
+    this.socket?.emit('typing:stop', conversationId);
+  }
+
+  setPresenceVisibility(visible: boolean): void {
+    this.socket?.emit('presence:set-visibility', visible);
+  }
+
+  queryPresence(userIds: readonly string[]): Promise<Record<string, boolean>> {
+    return new Promise((resolve) => {
+      if (!this.socket || userIds.length === 0) {
+        resolve({});
+        return;
+      }
+      this.socket.emit('presence:query', [...userIds], (result: Record<string, boolean>) => resolve(result ?? {}));
+    });
+  }
+
   private teardown(): void {
     this.stopTokenWatcher();
     this.detachBrowserListeners();
+    for (const state of this.typingState.values()) {
+      if (state.idleTimer) clearTimeout(state.idleTimer);
+    }
+    this.typingState.clear();
     this.joinedRooms.clear();
     this.activeConversationId = null;
     this.socket?.removeAllListeners();

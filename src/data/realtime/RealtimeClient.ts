@@ -39,6 +39,20 @@ export interface RealtimeMessageNewPayload {
 export interface RealtimeMessageReadPayload {
   readonly conversationId: string;
   readonly userId: string;
+  readonly lastReadAt: string;
+  readonly lastReadMessageId: string | null;
+}
+
+export interface RealtimeTypingUpdatePayload {
+  readonly conversationId: string;
+  readonly userId: string;
+  readonly isTyping: boolean;
+}
+
+export interface RealtimePresenceUpdatePayload {
+  readonly conversationId: string;
+  readonly userId: string;
+  readonly online: boolean;
 }
 
 export interface RawRealtimeNotification {
@@ -56,6 +70,8 @@ export interface RealtimeEventMap {
   readonly 'message:new': RealtimeMessageNewPayload;
   readonly 'message:read': RealtimeMessageReadPayload;
   readonly 'notification:new': RealtimeNotificationNewPayload;
+  readonly 'typing:update': RealtimeTypingUpdatePayload;
+  readonly 'presence:update': RealtimePresenceUpdatePayload;
 }
 
 export type RealtimeUnsubscribe = () => void;
@@ -74,4 +90,9 @@ export interface RealtimeClient {
     event: K,
     listener: (payload: RealtimeEventMap[K]) => void,
   ): RealtimeUnsubscribe;
+  /** Throttled internally; safe to call on every keystroke. */
+  notifyTyping(conversationId: string): void;
+  stopTyping(conversationId: string): void;
+  setPresenceVisibility(visible: boolean): void;
+  queryPresence(userIds: readonly string[]): Promise<Record<string, boolean>>;
 }

@@ -1,10 +1,14 @@
 'use client';
 
-import { useEffect, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
 import type { Message } from '../../domain/entities/Message';
-import type { RealtimeConnectionStatus, RealtimeNotificationNewPayload } from '../../data/realtime/RealtimeClient';
+import type {
+  RealtimeConnectionStatus,
+  RealtimeMessageReadPayload,
+  RealtimeNotificationNewPayload,
+} from '../../data/realtime/RealtimeClient';
 import { mapRealtimeMessage } from '../../data/realtime/RealtimeMessageMapper';
 import { useRealtimeClient } from '../container/DependencyProvider';
 import { queryKeys } from '../query/queryKeys';
@@ -12,6 +16,13 @@ import { useSession } from './useSession';
 
 export interface RealtimeViewModel {
   readonly status: RealtimeConnectionStatus;
+  /** userIds (never the viewer) currently typing in the active conversation. */
+  readonly typingUserIds: readonly string[];
+  /** The peer's latest read high-water mark for the active conversation, if any arrived. */
+  readonly peerReadReceipt: RealtimeMessageReadPayload | null;
+  notifyTyping(): void;
+  stopTyping(): void;
+  setPresenceVisibility(visible: boolean): void;
 }
 
 const upsertMessage = (current: readonly Message[], incoming: Message): readonly Message[] => {
@@ -41,6 +52,11 @@ const conversationIdFromNotification = (payload: RealtimeNotificationNewPayload)
   return null;
 };
 
+// Ad hoc, not in queryKeys.ts: this cache slot exists so a socket payload has somewhere
+// to land for any consumer to read later (e.g. a message-list view rendering a read
+// tick), without forcing every reader through this hook's return value.
+const readReceiptQueryKey = (conversationId: string) => ['realtime', 'readReceipt', conversationId] as const;
+
 /**
  * One instance of this hook owns the open thread (activeConversationId set), another
  * owns the inbox list (activeConversationId null) — see useConversation/useConversations.
@@ -52,6 +68,8 @@ export const useRealtime = (activeConversationId: string | null): RealtimeViewMo
   const client = useRealtimeClient();
   const { isSignedIn, viewerId } = useSession();
   const queryClient = useQueryClient();
+  const [typingUserIds, setTypingUserIds] = useState<readonly string[]>([]);
+  const [peerReadReceipt, setPeerReadReceipt] = useState<RealtimeMessageReadPayload | null>(null);
 
   const status = useSyncExternalStore(
     listener => client.onStatusChange(listener),
@@ -77,6 +95,13 @@ export const useRealtime = (activeConversationId: string | null): RealtimeViewMo
       if (client.getActiveConversation() === activeConversationId) client.setActiveConversation(null);
     };
   }, [client, activeConversationId]);
+
+  // Typing/read state is scoped to whichever conversation is active; switching threads
+  // (or losing the active one) must not carry stale state into the next mount.
+  useEffect(() => {
+    setTypingUserIds([]);
+    setPeerReadReceipt(null);
+  }, [activeConversationId]);
 
   useEffect(() => {
     if (!isSignedIn) return undefined;
@@ -108,5 +133,37 @@ export const useRealtime = (activeConversationId: string | null): RealtimeViewMo
     });
   }, [client, isSignedIn, activeConversationId, viewerId, queryClient]);
 
-  return { status };
+  useEffect(() => {
+    if (!isSignedIn || !activeConversationId) return undefined;
+
+    return client.on('message:read', payload => {
+      if (payload.conversationId !== activeConversationId) return;
+      setPeerReadReceipt(payload);
+      queryClient.setQueryData(readReceiptQueryKey(activeConversationId), payload);
+    });
+  }, [client, isSignedIn, activeConversationId, queryClient]);
+
+  useEffect(() => {
+    if (!isSignedIn || !activeConversationId) return undefined;
+
+    return client.on('typing:update', payload => {
+      if (payload.conversationId !== activeConversationId) return;
+      setTypingUserIds(current => {
+        const without = current.filter(id => id !== payload.userId);
+        return payload.isTyping ? [...without, payload.userId] : without;
+      });
+    });
+  }, [client, isSignedIn, activeConversationId]);
+
+  const notifyTyping = useCallback(() => {
+    if (activeConversationId) client.notifyTyping(activeConversationId);
+  }, [client, activeConversationId]);
+
+  const stopTyping = useCallback(() => {
+    if (activeConversationId) client.stopTyping(activeConversationId);
+  }, [client, activeConversationId]);
+
+  const setPresenceVisibility = useCallback((visible: boolean) => client.setPresenceVisibility(visible), [client]);
+
+  return { status, typingUserIds, peerReadReceipt, notifyTyping, stopTyping, setPresenceVisibility };
 };
