@@ -43,6 +43,23 @@ import { LoadUserPostsUseCase } from '../../application/profile/LoadUserPostsUse
 import { UpdateProfileUseCase } from '../../application/profile/UpdateProfileUseCase';
 import { LoadTrendingTopicsUseCase } from '../../application/search/LoadTrendingTopicsUseCase';
 import { SearchContentUseCase } from '../../application/search/SearchContentUseCase';
+import { AcceptFollowRequestUseCase } from '../../application/social/AcceptFollowRequestUseCase';
+import { BlockUserUseCase } from '../../application/social/BlockUserUseCase';
+import { CancelFollowRequestUseCase } from '../../application/social/CancelFollowRequestUseCase';
+import { FollowUserUseCase } from '../../application/social/FollowUserUseCase';
+import { LoadBlockedUseCase } from '../../application/social/LoadBlockedUseCase';
+import { LoadFollowersUseCase } from '../../application/social/LoadFollowersUseCase';
+import { LoadFollowingUseCase } from '../../application/social/LoadFollowingUseCase';
+import { LoadFollowRequestsUseCase } from '../../application/social/LoadFollowRequestsUseCase';
+import { LoadMutualsUseCase } from '../../application/social/LoadMutualsUseCase';
+import { LoadSuggestedUseCase } from '../../application/social/LoadSuggestedUseCase';
+import { LoadUserProfileUseCase } from '../../application/social/LoadUserProfileUseCase';
+import { MuteUserUseCase } from '../../application/social/MuteUserUseCase';
+import { RejectFollowRequestUseCase } from '../../application/social/RejectFollowRequestUseCase';
+import { RemoveFollowerUseCase } from '../../application/social/RemoveFollowerUseCase';
+import { UnblockUserUseCase } from '../../application/social/UnblockUserUseCase';
+import { UnfollowUserUseCase } from '../../application/social/UnfollowUserUseCase';
+import { UnmuteUserUseCase } from '../../application/social/UnmuteUserUseCase';
 
 export interface Repositories {
   readonly auth: AuthRepository;
@@ -78,6 +95,23 @@ export interface UseCases {
   readonly loadMyProfile: LoadMyProfileUseCase;
   readonly loadUserPosts: LoadUserPostsUseCase;
   readonly updateProfile: UpdateProfileUseCase;
+  readonly loadUserProfile: LoadUserProfileUseCase;
+  readonly followUser: FollowUserUseCase;
+  readonly unfollowUser: UnfollowUserUseCase;
+  readonly removeFollower: RemoveFollowerUseCase;
+  readonly loadFollowers: LoadFollowersUseCase;
+  readonly loadFollowing: LoadFollowingUseCase;
+  readonly loadMutuals: LoadMutualsUseCase;
+  readonly loadSuggested: LoadSuggestedUseCase;
+  readonly loadFollowRequests: LoadFollowRequestsUseCase;
+  readonly acceptFollowRequest: AcceptFollowRequestUseCase;
+  readonly rejectFollowRequest: RejectFollowRequestUseCase;
+  readonly cancelFollowRequest: CancelFollowRequestUseCase;
+  readonly loadBlocked: LoadBlockedUseCase;
+  readonly blockUser: BlockUserUseCase;
+  readonly unblockUser: UnblockUserUseCase;
+  readonly muteUser: MuteUserUseCase;
+  readonly unmuteUser: UnmuteUserUseCase;
 }
 
 export type Unsubscribe = () => void;
@@ -134,6 +168,24 @@ const buildUseCases = (repositories: Repositories, session: SessionRepository): 
   loadMyProfile: new LoadMyProfileUseCase(repositories.profile),
   loadUserPosts: new LoadUserPostsUseCase(repositories.profile),
   updateProfile: new UpdateProfileUseCase(repositories.profile),
+  loadUserProfile: new LoadUserProfileUseCase(repositories.profile),
+
+  followUser: new FollowUserUseCase(repositories.social),
+  unfollowUser: new UnfollowUserUseCase(repositories.social),
+  removeFollower: new RemoveFollowerUseCase(repositories.social),
+  loadFollowers: new LoadFollowersUseCase(repositories.social),
+  loadFollowing: new LoadFollowingUseCase(repositories.social),
+  loadMutuals: new LoadMutualsUseCase(repositories.social),
+  loadSuggested: new LoadSuggestedUseCase(repositories.social),
+  loadFollowRequests: new LoadFollowRequestsUseCase(repositories.social),
+  acceptFollowRequest: new AcceptFollowRequestUseCase(repositories.social),
+  rejectFollowRequest: new RejectFollowRequestUseCase(repositories.social),
+  cancelFollowRequest: new CancelFollowRequestUseCase(repositories.social),
+  loadBlocked: new LoadBlockedUseCase(repositories.social),
+  blockUser: new BlockUserUseCase(repositories.social),
+  unblockUser: new UnblockUserUseCase(repositories.social),
+  muteUser: new MuteUserUseCase(repositories.social),
+  unmuteUser: new UnmuteUserUseCase(repositories.social),
 });
 
 export const createContainer = (options: ContainerOptions = {}): AppContainer => {

@@ -1,8 +1,9 @@
 'use client';
 
-import { ImageOff, RefreshCw } from 'lucide-react';
+import { Heart, ImageOff, Inbox, Pencil, RefreshCw, ShieldOff } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
+import type { LucideIcon } from 'lucide-react';
 
 import type { Post } from '../../domain/entities/Post';
 import { initialOf } from '../../domain/entities/User';
@@ -15,6 +16,7 @@ import { Spinner } from '../components/Spinner';
 import { formatCount } from '../format';
 import { useMyProfile } from '../hooks/useProfile';
 import { ROUTES } from '../navigation/routes';
+import { SOCIAL_GRAPH_ROUTES } from '../navigation/socialRoutes';
 
 interface StatProps {
   readonly value: number;
@@ -26,6 +28,33 @@ const Stat = ({ value, label }: StatProps) => (
     <span className="text-lg font-bold text-paper">{formatCount(value)}</span>
     <span className="text-[11px] font-medium text-muted">{label}</span>
   </div>
+);
+
+interface StatLinkProps extends StatProps {
+  readonly href: string;
+}
+
+const StatLink = ({ value, label, href }: StatLinkProps) => (
+  <Link href={href} className="flex flex-1 flex-col items-center gap-1">
+    <span className="text-lg font-bold text-paper">{formatCount(value)}</span>
+    <span className="text-[11px] font-medium text-muted">{label}</span>
+  </Link>
+);
+
+interface SocialLinkProps {
+  readonly icon: LucideIcon;
+  readonly label: string;
+  readonly href: string;
+}
+
+const SocialLink = ({ icon: Icon, label, href }: SocialLinkProps) => (
+  <Link
+    href={href}
+    className="surface flex flex-1 flex-col items-center gap-1.5 rounded-xl py-3 text-paper transition-colors hover:bg-cobalt/15"
+  >
+    <Icon size={17} />
+    <span className="text-[11px] font-semibold">{label}</span>
+  </Link>
 );
 
 export const ProfileScreen = () => {
@@ -76,8 +105,16 @@ export const ProfileScreen = () => {
 
       <section className="surface mx-6 mt-5 flex divide-x divide-line rounded-2xl py-3.5">
         <Stat value={profile.counts.posts} label="Posts" />
-        <Stat value={profile.counts.followers} label="Followers" />
-        <Stat value={profile.counts.following} label="Following" />
+        <StatLink
+          value={profile.counts.followers}
+          label="Followers"
+          href={SOCIAL_GRAPH_ROUTES.followers(profile.handle)}
+        />
+        <StatLink
+          value={profile.counts.following}
+          label="Following"
+          href={SOCIAL_GRAPH_ROUTES.following(profile.handle)}
+        />
       </section>
 
       <div className="mx-6 mt-4 flex gap-3">
@@ -90,12 +127,25 @@ export const ProfileScreen = () => {
           Refresh
         </button>
         <Link
+          href={SOCIAL_GRAPH_ROUTES.editProfile}
+          className="surface flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-paper transition-colors hover:bg-cobalt/15"
+        >
+          <Pencil size={15} />
+          Edit profile
+        </Link>
+        <Link
           href={ROUTES.SETTINGS}
           className="surface flex flex-1 items-center justify-center rounded-xl py-3 text-sm font-semibold text-paper transition-colors hover:bg-cobalt/15"
         >
           Settings
         </Link>
       </div>
+
+      <section className="mx-6 mt-4 flex gap-3">
+        <SocialLink icon={Heart} label="Friends" href={SOCIAL_GRAPH_ROUTES.friends} />
+        <SocialLink icon={Inbox} label="Requests" href={SOCIAL_GRAPH_ROUTES.requests} />
+        <SocialLink icon={ShieldOff} label="Blocked" href={SOCIAL_GRAPH_ROUTES.blocked} />
+      </section>
 
       {profile.topTopics.length > 0 ? (
         <section className="mt-7 flex flex-col gap-3 px-6">
