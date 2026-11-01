@@ -12,7 +12,7 @@ const Row = ({ title, hint, children }: { title: string; hint: string; children:
       <h2 className="font-display text-[15px] font-semibold tracking-wide text-paper">{title}</h2>
       <p className="text-[12px] text-muted">{hint}</p>
     </div>
-    <div className="glass aero-sheen flex flex-wrap items-end gap-5 rounded-[8px] p-5">{children}</div>
+    <div className="surface flex flex-wrap items-end gap-5 rounded-card p-5">{children}</div>
   </section>
 );
 
@@ -29,29 +29,29 @@ const Page = () => {
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-4xl flex-col gap-10 px-8 py-14">
       <header>
-        <p className="text-[11px] font-semibold tracking-[0.2em] text-aero-cyan uppercase">
+        <p className="text-[11px] font-semibold tracking-[0.2em] text-cobalt-bright uppercase">
           PreQuit · component specimen
         </p>
-        <h1 className="display-title mt-2 text-4xl text-paper aero-glow-text">Black Aero</h1>
+        <h1 className="display-title mt-2 text-4xl text-paper">Pure Dark · Cobalt · Lime</h1>
         <p className="mt-2 max-w-prose text-[13px] text-muted">
-          Windows Vista/7 Aero on a black ground. Gloss breaks hard at 48%, buttons are raised with a
-          light-top / dark-bottom bevel, inputs are sunken. 5px radii, no pills.
+          The mobile app&apos;s language on the web: pure black ground, flat surfaces built from plain
+          white veils, square controls and rounded containers. 70% black, 20% cobalt, 10% lime.
         </p>
       </header>
 
-      <Row title="Primary button" hint="Azure Aero fill. Hover lifts brightness and adds the cyan halo.">
+      <Row title="Primary button" hint="Solid acid lime with an ink label — the only lime fill in the system.">
         <Caption label="default"><GlassButton tone="primary">Sign In</GlassButton></Caption>
-        <Caption label="hover"><GlassButton tone="primary" className="aero-button-hover">Sign In</GlassButton></Caption>
+        <Caption label="hover"><GlassButton tone="primary" className="btn-hover">Sign In</GlassButton></Caption>
         <Caption label="disabled"><GlassButton tone="primary" disabled>Sign In</GlassButton></Caption>
       </Row>
 
-      <Row title="Secondary button" hint="Graphite glass. Same bevel, no accent fill.">
+      <Row title="Secondary button" hint="Solid cobalt. The everyday action, one step below primary.">
         <Caption label="default"><GlassButton tone="secondary">Standard Login</GlassButton></Caption>
-        <Caption label="hover"><GlassButton tone="secondary" className="aero-button-hover">Standard Login</GlassButton></Caption>
+        <Caption label="hover"><GlassButton tone="secondary" className="btn-hover">Standard Login</GlassButton></Caption>
         <Caption label="disabled"><GlassButton tone="secondary" disabled>Standard Login</GlassButton></Caption>
       </Row>
 
-      <Row title="Sunken input" hint="Inset shadow with a light bottom edge — the inverse of the button bevel.">
+      <Row title="Input" hint="Flat #0d0d0d well, one hairline, square corners. Cobalt on focus.">
         <div className="w-60"><GlassField label="User Name:" value={value} onChange={e => setValue(e.target.value)} /></div>
         <div className="w-60"><GlassField label="Focused:" defaultValue="focus ring" autoFocus /></div>
         <div className="w-60"><GlassField label="Invalid:" defaultValue="bad@" invalid /></div>
@@ -61,24 +61,24 @@ const Page = () => {
         </div>
       </Row>
 
-      <Row title="Other tones" hint="outline and quiet — flat, no specular band.">
+      <Row title="Other tones" hint="outline and quiet — chrome-free, for cancel and dismiss.">
         <Caption label="outline"><GlassButton tone="outline">Cancel</GlassButton></Caption>
         <Caption label="quiet"><GlassButton tone="quiet">Dismiss</GlassButton></Caption>
         <Caption label="outline disabled"><GlassButton tone="outline" disabled>Cancel</GlassButton></Caption>
       </Row>
 
-      <Row title="Control scale" hint='size="control" — the dense Win7 dialog metric, for toolbars and chrome.'>
+      <Row title="Control scale" hint='size="control" — the dense metric, for toolbars and chrome.'>
         <Caption label="primary"><GlassButton tone="primary" size="control">Apply</GlassButton></Caption>
         <Caption label="secondary"><GlassButton tone="secondary" size="control">Browse…</GlassButton></Caption>
         <div className="w-52"><GlassField size="control" label="Dense field:" defaultValue="toolbar scale" /></div>
       </Row>
 
-      <Row title="Panel + active nav chip" hint="glass-raised for dialogs, aero-active for the selected rail item.">
-        <div className="glass-raised aero-sheen w-64 rounded-[8px] p-4">
+      <Row title="Panel + active nav chip" hint="surface-raised for dialogs, nav-active for the selected rail item.">
+        <div className="surface-raised w-64 rounded-card p-4">
           <p className="text-[13px] font-semibold text-paper">Raised panel</p>
-          <p className="mt-1 text-[12px] text-muted">Rim light plus outer azure bloom.</p>
+          <p className="mt-1 text-[12px] text-muted">Opaque #0c0c0c, never translucent.</p>
         </div>
-        <div className="aero-active flex h-9 items-center rounded-[5px] px-4 text-[13px] font-semibold text-paper">
+        <div className="nav-active flex h-9 items-center rounded-control px-4 text-[13px] font-semibold text-paper">
           Home
         </div>
       </Row>

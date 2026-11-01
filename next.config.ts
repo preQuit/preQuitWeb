@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
   // Without this the dev server refuses the HMR/runtime handshake for any origin
   // that is not localhost, the client never hydrates, and server-rendered state
   // (such as a hidden splash nav) stays frozen on screen.

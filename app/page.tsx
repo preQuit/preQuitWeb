@@ -1,7 +1,12 @@
 export const instant = false;
 
-import { SplashScreen } from '@/src/presentation/screens/SplashScreen';
+import { RequireGuest } from '@/src/presentation/navigation/RouteGuard';
+import { SignInScreen } from '@/src/presentation/screens/SignInScreen';
 
-const Page = () => <SplashScreen />;
+const Page = () => (
+  <RequireGuest>
+    <SignInScreen />
+  </RequireGuest>
+);
 
 export default Page;
