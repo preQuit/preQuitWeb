@@ -14,6 +14,6 @@ export const Spinner = ({ size = 'md', label = 'Loading' }: SpinnerProps) => (
   <span
     role="status"
     aria-label={label}
-    className={`inline-block animate-spin rounded-full border-white/25 border-t-white ${SIZES[size]}`}
+    className={`inline-block animate-spin rounded-full border-cobalt/30 border-t-cobalt-bright ${SIZES[size]}`}
   />
 );

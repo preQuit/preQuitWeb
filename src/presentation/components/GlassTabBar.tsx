@@ -20,7 +20,7 @@ export const GlassTabBar = ({ onCompose }: GlassTabBarProps) => {
 
   return (
     <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex justify-center px-6 pb-5 md:hidden">
-      <div className="glass-bar pointer-events-auto flex h-17 w-full max-w-lg items-center justify-around rounded-[34px] px-2">
+      <div className="bar pointer-events-auto flex h-17 w-full max-w-lg items-center justify-around rounded-[34px] px-2">
         {PRIMARY_NAV.map(({ href, label, icon: Icon }) => {
           const current = isCurrent(pathname, href);
           return (
@@ -32,7 +32,7 @@ export const GlassTabBar = ({ onCompose }: GlassTabBarProps) => {
             >
               <span
                 className={`absolute size-11 rounded-full transition-all duration-200 ${
-                  current ? 'aero-active -translate-y-1.5 scale-100 opacity-100' : 'scale-60 opacity-0'
+                  current ? 'nav-active -translate-y-1.5 scale-100 opacity-100' : 'scale-60 opacity-0'
                 }`}
               />
               <Icon

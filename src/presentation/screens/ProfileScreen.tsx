@@ -53,7 +53,7 @@ export const ProfileScreen = () => {
   return (
     <main className="flex flex-col pt-10">
       <section className="flex flex-col items-center px-6">
-        <span className="glass-raised flex size-30 items-center justify-center rounded-full text-5xl font-extrabold text-paper shadow-[0_0_48px_rgba(255,255,255,0.22)]">
+        <span className="surface-raised flex size-30 items-center justify-center rounded-full text-5xl font-extrabold text-paper shadow-[0_0_48px_rgb(var(--cobalt-rgb)/0.45)]">
           {profile.avatarUrl ? (
             <img
               src={profile.avatarUrl}
@@ -74,7 +74,7 @@ export const ProfileScreen = () => {
         ) : null}
       </section>
 
-      <section className="glass mx-6 mt-5 flex divide-x divide-white/10 rounded-2xl py-3.5">
+      <section className="surface mx-6 mt-5 flex divide-x divide-line rounded-2xl py-3.5">
         <Stat value={profile.counts.posts} label="Posts" />
         <Stat value={profile.counts.followers} label="Followers" />
         <Stat value={profile.counts.following} label="Following" />
@@ -84,14 +84,14 @@ export const ProfileScreen = () => {
         <button
           type="button"
           onClick={refresh}
-          className="glass flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-paper transition-colors hover:bg-white/10"
+          className="surface flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-paper transition-colors hover:bg-cobalt/15"
         >
           <RefreshCw size={15} className={isRefreshing ? 'animate-spin' : ''} />
           Refresh
         </button>
         <Link
           href={ROUTES.SETTINGS}
-          className="glass flex flex-1 items-center justify-center rounded-xl py-3 text-sm font-semibold text-paper transition-colors hover:bg-white/10"
+          className="surface flex flex-1 items-center justify-center rounded-xl py-3 text-sm font-semibold text-paper transition-colors hover:bg-cobalt/15"
         >
           Settings
         </Link>
@@ -104,7 +104,7 @@ export const ProfileScreen = () => {
             {profile.topTopics.map(topic => (
               <span
                 key={topic.slug}
-                className="glass rounded-full px-3.5 py-2 text-[13px] font-semibold text-paper"
+                className="surface rounded-full px-3.5 py-2 text-[13px] font-semibold text-paper"
               >
                 {topic.label}
               </span>

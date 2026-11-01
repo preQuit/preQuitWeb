@@ -11,7 +11,7 @@ export const SolarSystem = () => (
     {SOLAR.rings.map(ring => (
       <span
         key={ring}
-        className="absolute rounded-full border border-white/14"
+        className="absolute rounded-full border border-line"
         style={{ width: ring, height: ring }}
       />
     ))}
@@ -40,11 +40,11 @@ export const SolarSystem = () => (
     ))}
 
     <span
-      className="glass-raised flex animate-pulse-sun items-center justify-center rounded-full"
+      className="surface flex animate-pulse-sun items-center justify-center rounded-full"
       style={{
         width: SOLAR.sunSize,
         height: SOLAR.sunSize,
-        boxShadow: '0 0 60px rgba(255,255,255,0.35), inset 0 1px 0 rgba(255,255,255,0.35)',
+        boxShadow: '0 0 60px rgb(var(--cobalt-rgb) / 0.45)',
       }}
     >
       <span className="display-title text-3xl text-paper">PQ</span>

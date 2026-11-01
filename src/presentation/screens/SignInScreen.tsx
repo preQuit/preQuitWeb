@@ -5,8 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useId, useState, type FormEvent } from 'react';
 
 import { messageOf } from '../../domain/errors/AppError';
-import { AeroEmblem } from '../components/AeroEmblem';
-import { AuthPanel } from '../components/AuthPanel';
+import { AuthSplit } from '../components/AuthSplit';
 import { FormError } from '../components/FormError';
 import { GlassButton } from '../components/GlassButton';
 import { GlassField } from '../components/GlassField';
@@ -41,7 +40,7 @@ export const SignInScreen = () => {
   };
 
   return (
-    <AuthPanel title="Welcome to PreQuit" aside={<AeroEmblem size={148} />}>
+    <AuthSplit title="Log in" subtitle="Welcome back to PreQuit">
       <form onSubmit={submit} className="flex flex-col gap-4">
         <GlassField
           id={`${fieldId}-identifier`}
@@ -73,19 +72,20 @@ export const SignInScreen = () => {
 
         <div className="flex flex-col items-end gap-1 pt-1 text-sm">
           <Link
-            href={ROUTES.SIGN_UP}
-            className="text-aero-cyan transition-colors hover:text-paper hover:underline"
-          >
-            Create an account
-          </Link>
-          <Link
             href={ROUTES.RESET_PASSWORD}
-            className="text-aero-cyan transition-colors hover:text-paper hover:underline"
+            className="text-cobalt-bright transition-colors hover:text-paper hover:underline"
           >
             Forgot Password?
           </Link>
         </div>
+
+        <p className="pt-2 text-center text-sm text-muted">
+          Don&apos;t have an account?{' '}
+          <Link href={ROUTES.SIGN_UP} className="font-semibold text-paper hover:underline">
+            Create new account
+          </Link>
+        </p>
       </form>
-    </AuthPanel>
+    </AuthSplit>
   );
 };

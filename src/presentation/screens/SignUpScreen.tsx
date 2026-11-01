@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState, type FormEvent } from 'react';
 
 import { messageOf } from '../../domain/errors/AppError';
-import { AuthPanel } from '../components/AuthPanel';
+import { AuthSplit } from '../components/AuthSplit';
 import { FormError } from '../components/FormError';
 import { FormNotice } from '../components/FormNotice';
 import { GlassButton } from '../components/GlassButton';
@@ -82,8 +82,8 @@ export const SignUpScreen = () => {
   };
 
   return (
-    <AuthPanel
-      title="Create an account"
+    <AuthSplit
+      title="Create new account"
       subtitle="Join PreQuit — the eye of internet."
       backHref={ROUTES.SIGN_IN}
     >
@@ -155,13 +155,13 @@ export const SignUpScreen = () => {
           {isSigningUp ? 'Creating…' : 'Create Account'}
         </GlassButton>
 
-        <p className="text-center text-sm text-white/60">
+        <p className="text-center text-sm text-muted">
           Already registered?{' '}
           <Link href={ROUTES.SIGN_IN} className="font-semibold text-paper hover:underline">
             Log in
           </Link>
         </p>
       </form>
-    </AuthPanel>
+    </AuthSplit>
   );
 };

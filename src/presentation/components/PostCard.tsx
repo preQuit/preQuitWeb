@@ -28,7 +28,7 @@ const PostCardView = ({
   const published = formatRelative(post.publishedAt);
 
   return (
-    <article className="glass animate-rise overflow-hidden rounded-glass">
+    <article className="surface animate-rise overflow-hidden rounded-card">
       <header className="flex items-center gap-3 px-4 py-3">
         <button
           type="button"
@@ -48,7 +48,7 @@ const PostCardView = ({
       </header>
 
       {post.reason?.label ? (
-        <p className="glass-subtle mx-4 mb-2.5 w-fit rounded-xl px-2.5 py-1 text-[11px] tracking-wide text-muted">
+        <p className="surface-subtle mx-4 mb-2.5 w-fit rounded-xl px-2.5 py-1 text-[11px] tracking-wide text-muted">
           {post.reason.label}
         </p>
       ) : null}
@@ -65,7 +65,7 @@ const PostCardView = ({
           alt={image.altText ?? ''}
           loading="lazy"
           onError={() => setMediaFailed(true)}
-          className="aspect-square w-full bg-white/5 object-cover"
+          className="aspect-square w-full bg-surface-fill object-cover"
         />
       ) : null}
 
@@ -114,7 +114,10 @@ const PostCardView = ({
           aria-label={viewer.hasSaved ? 'Remove from saved' : 'Save'}
           className="ml-auto text-paper transition-opacity hover:opacity-80 disabled:cursor-default"
         >
-          <Bookmark size={20} className={viewer.hasSaved ? 'fill-paper' : ''} />
+          <Bookmark
+            size={20}
+            className={viewer.hasSaved ? 'fill-cobalt-bright text-cobalt-bright' : ''}
+          />
         </button>
       </footer>
     </article>

@@ -14,7 +14,7 @@ interface TopicTagProps {
 }
 
 const TopicTag = ({ topic }: TopicTagProps) => (
-  <span className="glass flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[13px] font-semibold text-paper">
+  <span className="surface flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[13px] font-semibold text-paper">
     <Tag size={13} />
     {topic.label}
   </span>
@@ -31,7 +31,7 @@ export const HomeScreen = () => {
     <main className="flex flex-col px-6 pt-10">
       <h1 className="display-title text-center text-[44px] text-paper">PreQuit</h1>
 
-      <div className="glass mt-5 flex h-14 items-center gap-2.5 rounded-2xl px-4 transition-colors focus-within:border-glass-edge">
+      <div className="surface mt-5 flex h-14 items-center gap-2.5 rounded-2xl px-4 transition-colors focus-within:border-cobalt">
         <SearchIcon size={20} className="shrink-0 text-faint" />
         <input
           type="search"

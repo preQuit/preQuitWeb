@@ -78,14 +78,14 @@ export const ComposerDialog = ({ open, onClose }: ComposerDialogProps) => {
       role="dialog"
       aria-modal="true"
       aria-label="Create a post"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 py-8 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 py-8"
       onClick={event => {
         if (event.target === event.currentTarget && !publish.isPending) onClose();
       }}
     >
-      <section className="glass-raised aero-sheen animate-panel-expand w-full max-w-xl rounded-glass">
-        <header className="aero-rule flex items-center justify-between px-6 py-3.5">
-          <h2 className="font-display text-base font-semibold text-paper aero-text-shadow">
+      <section className="surface-raised animate-panel-expand w-full max-w-xl rounded-card">
+        <header className="rule flex items-center justify-between px-6 py-3.5">
+          <h2 className="font-display text-base font-semibold text-paper">
             Create a post
           </h2>
           <button
@@ -93,7 +93,7 @@ export const ComposerDialog = ({ open, onClose }: ComposerDialogProps) => {
             onClick={onClose}
             aria-label="Close"
             disabled={publish.isPending}
-            className="flex size-7 items-center justify-center rounded-control text-muted transition-colors hover:bg-white/8 hover:text-paper disabled:opacity-40"
+            className="flex size-7 items-center justify-center rounded-control text-muted transition-colors hover:bg-cobalt/14 hover:text-paper disabled:opacity-40"
           >
             <X size={16} />
           </button>
@@ -101,7 +101,7 @@ export const ComposerDialog = ({ open, onClose }: ComposerDialogProps) => {
 
         <div className="flex flex-col gap-4 px-6 py-5">
           <label htmlFor={fieldId} className="flex flex-col gap-1.5">
-            <span className="text-control font-semibold text-paper/90 aero-text-shadow">
+            <span className="text-control font-semibold text-paper/90">
               Description:
             </span>
             <textarea
@@ -111,12 +111,12 @@ export const ComposerDialog = ({ open, onClose }: ComposerDialogProps) => {
               value={description}
               placeholder="Say something about it…"
               onChange={event => setDescription(event.target.value)}
-              className="glass-field w-full resize-none px-3.5 py-2.5 text-action text-paper outline-none focus-within:glass-field-focus"
+              className="field w-full resize-none px-3.5 py-2.5 text-action text-paper outline-none focus-within:field-focus"
             />
           </label>
 
           <div className="flex flex-col gap-2">
-            <span className="text-control font-semibold text-paper/90 aero-text-shadow">
+            <span className="text-control font-semibold text-paper/90">
               Images: <span className="font-normal text-muted">required, up to {MAX_IMAGES}</span>
             </span>
 
@@ -129,7 +129,7 @@ export const ComposerDialog = ({ open, onClose }: ComposerDialogProps) => {
                     <img
                       src={item.preview}
                       alt=""
-                      className="size-20 rounded-control border border-glass-line object-cover"
+                      className="size-20 rounded-control border border-line object-cover"
                     />
                     <button
                       type="button"

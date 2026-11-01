@@ -82,7 +82,7 @@ export const SocialScreen = () => {
               aria-selected={active}
               onClick={() => setSurface(item.key)}
               className={`rounded-2xl px-3.5 py-1.5 text-[13px] font-semibold transition-colors ${
-                active ? 'bg-paper text-ink' : 'glass text-muted hover:text-paper'
+                active ? 'bg-cobalt text-paper' : 'surface text-muted hover:text-paper'
               }`}
             >
               {item.label}

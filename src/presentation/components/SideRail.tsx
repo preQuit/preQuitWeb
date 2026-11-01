@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 
 import { isCurrent, PRIMARY_NAV, SECONDARY_NAV, type NavItem } from '../navigation/navItems';
 import { ROUTES } from '../navigation/routes';
-import { AeroEmblem } from './AeroEmblem';
+import { Emblem } from './Emblem';
 import { GlassButton } from './GlassButton';
 
 const Item = ({ item, current }: { item: NavItem; current: boolean }) => {
@@ -18,12 +18,12 @@ const Item = ({ item, current }: { item: NavItem; current: boolean }) => {
       title={item.label}
       className={`flex h-11 items-center gap-3.5 rounded-control px-3 transition-colors duration-150 ${
         current
-          ? 'aero-active text-paper'
-          : 'border border-transparent text-muted hover:bg-white/7 hover:text-paper'
+          ? 'nav-active text-paper'
+          : 'border border-transparent text-muted hover:bg-cobalt/12 hover:text-paper'
       }`}
     >
       <Icon size={20} strokeWidth={current ? 2.2 : 1.7} className="shrink-0" />
-      <span className="hidden truncate text-sm font-semibold aero-text-shadow xl:inline">
+      <span className="hidden truncate text-sm font-semibold xl:inline">
         {item.label}
       </span>
     </Link>
@@ -42,13 +42,13 @@ export const SideRail = ({ onCompose }: SideRailProps) => {
   const pathname = usePathname();
 
   return (
-    <nav className="glass-bar fixed inset-y-0 left-0 z-30 hidden w-rail flex-col gap-1 border-y-0 border-l-0 px-3 py-5 md:flex xl:w-rail-wide">
+    <nav className="bar fixed inset-y-0 left-0 z-30 hidden w-rail flex-col gap-1 border-y-0 border-l-0 px-3 py-5 md:flex xl:w-rail-wide">
       <Link
         href={ROUTES.SOCIAL}
         className="mb-4 flex items-center gap-3 px-1 transition-opacity hover:opacity-80"
       >
-        <AeroEmblem size={34} className="shrink-0" />
-        <span className="hidden font-display text-lg font-semibold text-paper aero-text-shadow xl:inline">
+        <Emblem size={34} className="shrink-0" />
+        <span className="hidden font-display text-lg font-semibold text-paper xl:inline">
           PreQuit
         </span>
       </Link>

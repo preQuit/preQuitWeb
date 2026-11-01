@@ -5,28 +5,21 @@ import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import type { ControlSize } from './controlSize';
 
 /**
- * The one button in the app. Aero tones are raised and glossy; `quiet` is the
- * flat toolbar affordance. Call sites pick a tone — they never restyle.
+ * The one button in the app. Flat and square-cornered, like the mobile app:
+ * a solid block of colour with no gradient, bevel or gloss. Call sites pick a
+ * tone — they never restyle.
  */
 export type ButtonTone = 'primary' | 'secondary' | 'outline' | 'quiet';
 
-interface ToneSpec {
-  readonly classes: string;
-  /** Glossy tones get the specular band; flat ones must not. */
-  readonly glossy: boolean;
-}
-
-const TONES: Readonly<Record<ButtonTone, ToneSpec>> = {
-  primary: { classes: 'aero-button aero-button-primary hover:aero-button-hover', glossy: true },
-  secondary: { classes: 'aero-button hover:aero-button-hover', glossy: true },
-  outline: {
-    classes: 'rounded-control border border-glass-line bg-white/4 hover:aero-button-hover hover:border-glass-edge',
-    glossy: false,
-  },
-  quiet: {
-    classes: 'rounded-control border border-transparent text-muted hover:bg-white/6 hover:text-paper',
-    glossy: false,
-  },
+const TONES: Readonly<Record<ButtonTone, string>> = {
+  // Acid lime is the 10% of the palette, so `primary` is the only tone that
+  // may fill with it. Its label is ink, not paper: lime this saturated
+  // measures 1.05:1 against white.
+  primary: 'btn btn-primary hover:btn-primary-hover text-ink',
+  secondary: 'btn hover:btn-hover text-paper',
+  outline:
+    'rounded-control border border-line bg-transparent text-paper hover:border-cobalt hover:bg-cobalt/12',
+  quiet: 'rounded-control border border-transparent text-muted hover:bg-cobalt/12 hover:text-paper',
 };
 
 const SIZES: Readonly<Record<ControlSize, string>> = {
@@ -47,22 +40,12 @@ export const GlassButton = ({
   type = 'button',
   children,
   ...rest
-}: GlassButtonProps) => {
-  const spec = TONES[tone];
-
-  return (
-    <button
-      type={type}
-      className={`group relative inline-flex select-none items-center justify-center gap-2 font-semibold text-paper disabled:pointer-events-none disabled:opacity-45 disabled:saturate-50 ${SIZES[size]} ${spec.classes} ${className}`}
-      {...rest}
-    >
-      {spec.glossy && (
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-control bg-linear-to-b from-white/22 to-transparent transition-opacity duration-150 group-active:opacity-40"
-        />
-      )}
-      <span className="relative inline-flex items-center gap-2 aero-text-shadow">{children}</span>
-    </button>
-  );
-};
+}: GlassButtonProps) => (
+  <button
+    type={type}
+    className={`inline-flex select-none items-center justify-center gap-2 font-bold transition-opacity active:opacity-80 disabled:pointer-events-none disabled:opacity-60 ${SIZES[size]} ${TONES[tone]} ${className}`}
+    {...rest}
+  >
+    {children}
+  </button>
+);

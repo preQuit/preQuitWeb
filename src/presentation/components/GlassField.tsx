@@ -5,11 +5,11 @@ import type { InputHTMLAttributes, ReactNode } from 'react';
 import type { ControlSize } from './controlSize';
 
 /**
- * The one text input in the app. Sunken Aero well; an optional label renders
- * above it in the Win7 dialog style ("User Name:").
+ * The one text input in the app. Flat square well with a single hairline, at
+ * the mobile app's 56px height; an optional label renders above it.
  */
 const SIZES: Readonly<Record<ControlSize, string>> = {
-  action: 'h-action gap-3 px-3.5 text-action',
+  action: 'h-field gap-3 px-4 text-action',
   control: 'h-control gap-2 px-2.5 text-control',
 };
 
@@ -31,9 +31,9 @@ export const GlassField = ({
 }: GlassFieldProps) => {
   const control = (
     <div
-      className={`glass-field flex items-center focus-within:glass-field-focus ${SIZES[size]} ${
-        invalid ? 'glass-field-invalid' : ''
-      } ${rest.disabled ? 'opacity-45' : ''}`}
+      className={`field flex items-center focus-within:field-focus ${SIZES[size]} ${
+        invalid ? 'field-invalid' : ''
+      } ${rest.disabled ? 'opacity-50' : ''}`}
     >
       <input
         id={id}
@@ -48,7 +48,7 @@ export const GlassField = ({
 
   return (
     <label htmlFor={id} className="flex flex-col gap-1.5">
-      <span className="text-control font-semibold text-paper/90 aero-text-shadow">{label}</span>
+      <span className="text-control font-bold tracking-wide text-muted uppercase">{label}</span>
       {control}
     </label>
   );

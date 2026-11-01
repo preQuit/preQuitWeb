@@ -28,13 +28,13 @@ const Bubble = ({ message }: BubbleProps) => (
   <li
     className={`flex max-w-[78%] flex-col px-3.5 py-2.5 ${
       message.mine
-        ? 'self-end rounded-[18px] rounded-br-sm bg-paper text-ink'
-        : 'glass self-start rounded-[18px] rounded-bl-sm text-paper'
+        ? 'self-end rounded-[18px] rounded-br-sm bg-cobalt text-paper'
+        : 'surface self-start rounded-[18px] rounded-bl-sm text-paper'
     }`}
   >
     <span className="text-[15px] leading-5 whitespace-pre-wrap">{message.body}</span>
     <span
-      className={`mt-1 self-end text-[10px] ${message.mine ? 'text-black/45' : 'text-muted'}`}
+      className={`mt-1 self-end text-[10px] ${message.mine ? 'text-paper/60' : 'text-muted'}`}
     >
       {statusOf(message)}
     </span>
@@ -67,7 +67,7 @@ export const DirectMessageScreen = () => {
 
   return (
     <main className="flex min-h-dvh flex-col">
-      <header className="sticky top-0 z-20 flex items-center gap-3 border-b border-white/10 bg-ink/70 px-3 py-3 backdrop-blur-2xl">
+      <header className="sticky top-0 z-20 flex items-center gap-3 border-b border-line bg-ink px-3 py-3">
         <Link
           href={ROUTES.CHATS}
           aria-label="Back to chats"
@@ -101,7 +101,7 @@ export const DirectMessageScreen = () => {
 
       <form
         onSubmit={submit}
-        className="sticky bottom-0 flex items-end gap-2 border-t border-white/10 bg-ink/70 px-3 py-3 pb-24 backdrop-blur-2xl"
+        className="sticky bottom-0 flex items-end gap-2 border-t border-line bg-ink px-3 py-3 pb-24"
       >
         <input
           value={draft}
@@ -109,13 +109,13 @@ export const DirectMessageScreen = () => {
           placeholder="Message"
           aria-label="Message"
           autoComplete="off"
-          className="glass-field h-11 min-w-0 flex-1 rounded-full px-4 text-[15px] text-paper outline-none"
+          className="field h-11 min-w-0 flex-1 rounded-full px-4 text-[15px] text-paper outline-none focus:field-focus"
         />
         <button
           type="submit"
           disabled={isSending || draft.trim().length === 0}
           aria-label="Send message"
-          className="flex size-11 shrink-0 items-center justify-center rounded-full bg-paper text-ink transition-opacity disabled:opacity-40"
+          className="flex size-11 shrink-0 items-center justify-center rounded-full bg-lime text-ink transition-opacity disabled:opacity-40"
         >
           {isSending ? <Spinner size="sm" /> : <Send size={18} />}
         </button>

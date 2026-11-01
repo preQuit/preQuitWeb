@@ -20,7 +20,7 @@ const initialOf = (name: string): string => {
 
 export const Avatar = ({ name, url, size = 'md' }: AvatarProps) => (
   <span
-    className={`glass-subtle relative flex shrink-0 items-center justify-center overflow-hidden rounded-full font-bold text-paper ${SIZES[size]}`}
+    className={`surface-subtle relative flex shrink-0 items-center justify-center overflow-hidden rounded-full font-bold text-paper ${SIZES[size]}`}
   >
     {url ? (
       <img src={url} alt={name} className="size-full object-cover" loading="lazy" />

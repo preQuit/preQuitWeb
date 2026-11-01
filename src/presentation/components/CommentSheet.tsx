@@ -65,7 +65,7 @@ export const CommentSheet = ({ post, onClose }: CommentSheetProps) => {
       role="dialog"
       aria-modal="true"
       aria-label="Comments"
-      className="fixed inset-0 z-40 flex items-end justify-center bg-black/60 backdrop-blur-sm sm:items-center"
+      className="fixed inset-0 z-40 flex items-end justify-center bg-black/60 sm:items-center"
     >
       <button
         type="button"
@@ -74,10 +74,10 @@ export const CommentSheet = ({ post, onClose }: CommentSheetProps) => {
         className="absolute inset-0 cursor-default"
       />
 
-      <section className="glass-raised animate-sheet relative flex max-h-[80vh] w-full max-w-xl flex-col rounded-t-3xl sm:rounded-3xl">
-        <span className="mx-auto mt-2.5 h-1 w-10 rounded-full bg-white/20" />
+      <section className="surface-raised animate-sheet relative flex max-h-[80vh] w-full max-w-xl flex-col rounded-t-sheet sm:rounded-sheet">
+        <span className="mx-auto mt-2.5 h-1 w-10 rounded-full bg-line" />
 
-        <header className="flex items-center gap-3 border-b border-white/10 px-5 py-3">
+        <header className="flex items-center gap-3 border-b border-line px-5 py-3">
           <h2 className="flex-1 text-base font-bold text-paper">
             {comments.length} {comments.length === 1 ? 'comment' : 'comments'}
           </h2>
@@ -109,20 +109,20 @@ export const CommentSheet = ({ post, onClose }: CommentSheetProps) => {
 
         <form
           onSubmit={submit}
-          className="flex items-center gap-2.5 border-t border-white/10 px-4 py-3"
+          className="flex items-center gap-2.5 border-t border-line px-4 py-3"
         >
           <input
             value={draft}
             onChange={event => setDraft(event.target.value)}
             placeholder="Add a comment"
             aria-label="Add a comment"
-            className="glass-field h-11 min-w-0 flex-1 rounded-full px-4 text-sm text-paper outline-none"
+            className="field h-11 min-w-0 flex-1 rounded-full px-4 text-sm text-paper outline-none focus:field-focus"
           />
           <button
             type="submit"
             disabled={isSubmitting || draft.trim().length === 0}
             aria-label="Send comment"
-            className="flex size-11 shrink-0 items-center justify-center rounded-full bg-paper text-ink transition-opacity disabled:opacity-40"
+            className="flex size-11 shrink-0 items-center justify-center rounded-full bg-lime text-ink transition-opacity disabled:opacity-40"
           >
             {isSubmitting ? <Spinner size="sm" /> : <Send size={17} />}
           </button>

@@ -28,7 +28,7 @@ const ConversationRow = ({ conversation }: ConversationRowProps) => {
     <li>
       <Link
         href={conversationRoute(conversation.id)}
-        className="flex items-center gap-3.5 px-4 py-3 transition-colors hover:bg-white/5"
+        className="flex items-center gap-3.5 px-4 py-3 transition-colors hover:bg-cobalt/10"
       >
         <Avatar name={name} url={conversation.peer?.avatarUrl} size="lg" />
         <div className="min-w-0 flex-1">
@@ -43,7 +43,7 @@ const ConversationRow = ({ conversation }: ConversationRowProps) => {
               {conversation.lastMessage?.mine ? `You: ${preview}` : preview}
             </span>
             {unread ? (
-              <span className="flex h-5.5 min-w-5.5 shrink-0 items-center justify-center rounded-full bg-paper px-1.5 text-xs font-bold text-ink">
+              <span className="flex h-5.5 min-w-5.5 shrink-0 items-center justify-center rounded-full bg-lime px-1.5 text-xs font-bold text-ink">
                 {conversation.unreadCount}
               </span>
             ) : null}
@@ -70,7 +70,7 @@ export const ChatsScreen = () => {
     <main className="flex flex-col">
       <ScreenHeader title="Chats" />
 
-      <div className="glass mx-4 mb-3 flex h-11 items-center gap-2 rounded-full px-3.5 transition-colors focus-within:border-glass-edge">
+      <div className="surface mx-4 mb-3 flex h-11 items-center gap-2 rounded-full px-3.5 transition-colors focus-within:border-cobalt">
         <SearchIcon size={17} className="shrink-0 text-faint" />
         <input
           type="search"
@@ -98,7 +98,7 @@ export const ChatsScreen = () => {
           }
         />
       ) : (
-        <ul className="flex flex-col divide-y divide-white/8">
+        <ul className="flex flex-col divide-y divide-line">
           {visible.map(conversation => (
             <ConversationRow key={conversation.id} conversation={conversation} />
           ))}

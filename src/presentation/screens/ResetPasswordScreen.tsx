@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useState, type FormEvent } from 'react';
 
 import { messageOf } from '../../domain/errors/AppError';
-import { AuthPanel } from '../components/AuthPanel';
+import { AuthSplit } from '../components/AuthSplit';
 import { FormError } from '../components/FormError';
 import { FormNotice } from '../components/FormNotice';
 import { GlassButton } from '../components/GlassButton';
@@ -40,7 +40,7 @@ export const ResetPasswordScreen = () => {
   };
 
   return (
-    <AuthPanel
+    <AuthSplit
       title="Reset your password"
       subtitle="We will email you a link to set a new one."
       backHref={ROUTES.SIGN_IN}
@@ -65,6 +65,6 @@ export const ResetPasswordScreen = () => {
           {request.isPending ? 'Sending…' : 'Send reset link'}
         </GlassButton>
       </form>
-    </AuthPanel>
+    </AuthSplit>
   );
 };
