@@ -1,91 +1,104 @@
 @import "tailwindcss";
 
 /* ───────────────────────────────────────────────────────────────
-   PreQuit — Black Aero
-   Frutiger Aero / Windows Vista–7 glass, rebuilt on a black ground.
-   Surfaces are glossy and raised; inputs are sunken. The gloss break
-   at 48%→50% and the 1px light-top / dark-bottom bevel are the two
-   details that carry the whole look.
+   PreQuit — pure dark, cobalt, lime
+
+   The web app wears the mobile app's design language: a pure black
+   ground, flat surfaces built from plain white veils, sharp-cornered
+   controls, and rounded cards. There is no gloss gradient, no bevel
+   and no specular sheen anywhere in this file — surfaces separate by
+   a single hairline and a flat fill, exactly as they do on device.
+
+   Colour order of precedence:
+     70%  pure black      ground, cards, sheets, fields, bars
+     20%  cobalt blue     nav state, focus, links, own messages
+     10%  acid lime       the one action that outranks everything
+
+   Lime is the scarcest ink in the system. Anything merely important
+   is cobalt; lime is reserved for the single highest action in a
+   view, or it stops reading as an accent at all.
    ─────────────────────────────────────────────────────────────── */
 
 @theme {
+  /* ─── 70% · pure black ──────────────────────────────────────
+     Four flat steps, lifted straight from the mobile tokens. */
   --color-ink: #000000;
+  --color-ink-field: #0d0d0d;
+  --color-ink-raised: #0c0c0c;
+  --color-ink-bar: #141414;
+
   --color-paper: #ffffff;
 
-  /* channel form so rgba() stops being hand-typed for the accents */
-  --aero-cyan-rgb: 88 215 255;
-  --aero-azure-rgb: 47 155 255;
-  --aero-teal-rgb: 31 227 194;
-  --aero-sky-rgb: 146 225 255;   /* pale shaft blue, lighter than the cyan accent */
+  /* Surfaces are plain white veils over black — no tint, no blur, so
+     a card over a card still reads as two flat planes. */
+  --color-surface-fill: rgba(255, 255, 255, 0.06);
+  --color-surface-strong: rgba(255, 255, 255, 0.1);
+  --color-line: rgba(255, 255, 255, 0.14);
+  --color-line-strong: rgba(255, 255, 255, 0.25);
 
-  /* Aero accents — azure through to the Frutiger teal/lime end */
-  --color-aero-cyan: rgb(var(--aero-cyan-rgb));
-  --color-aero-azure: rgb(var(--aero-azure-rgb));
-  --color-aero-teal: rgb(var(--aero-teal-rgb));
-  --color-aero-lime: #9ced4f;
-  --color-aero-deep: #0a3a5c;
+  /* Opacities are set to clear 4.5:1 on black, not chosen by eye;
+     `faint` carries placeholder text. */
+  --color-muted: rgba(255, 255, 255, 0.6);
+  --color-faint: rgba(255, 255, 255, 0.47);
 
-  --color-orbit-red: #ff3b30;
-  --color-orbit-violet: #8a2be2;
-  --color-orbit-blue: #2e9bff;
-  --color-like: #ff375f;
+  /* ─── 20% · cobalt blue ─────────────────────────────────────
+     Channel form so rgba() stops being hand-typed for the accents. */
+  --cobalt-rgb: 43 85 255;
+  --color-cobalt: rgb(var(--cobalt-rgb));
+  --color-cobalt-bright: #6e8cff;
+
+  /* ─── 10% · acid lime ───────────────────────────────────────── */
+  --lime-rgb: 204 255 0;
+  --color-lime: rgb(var(--lime-rgb));
+  --color-lime-deep: #a3cc00;
+
+  /* Decorative brand art (the splash orbits) stays inside the palette. */
+  --color-orbit-lime: rgb(var(--lime-rgb));
+  --color-orbit-cobalt: rgb(var(--cobalt-rgb));
+  --color-orbit-pale: var(--color-cobalt-bright);
+
+  /* "Liked" is an on-state, so it earns the lime. */
+  --color-like: rgb(var(--lime-rgb));
+
+  /* Outside the 70/20/10 ratio on purpose: destructive confirmation
+     and validation need a signal the palette cannot encode, and a
+     lime or cobalt error reads as success. Used nowhere else. */
   --color-danger: #ff453a;
   --color-failure: #ff6b6b;
 
-  --color-glass: rgba(255, 255, 255, 0.07);
-  --color-glass-strong: rgba(255, 255, 255, 0.12);
-  --color-glass-line: rgba(255, 255, 255, 0.16);
-  --color-glass-edge: rgba(136, 226, 255, 0.55);
-  --color-muted: rgba(214, 236, 248, 0.58);
-  --color-faint: rgba(214, 236, 248, 0.38);
+  --font-display: var(--font-display-family), system-ui, sans-serif;
+  --font-sans: var(--font-body-family), system-ui, -apple-system, sans-serif;
 
-  /* Segoe UI is the real Vista/7 face — use it when the client has it. */
-  --font-display: var(--font-display-family), "Segoe UI", "Titillium Web", sans-serif;
-  --font-sans: "Segoe UI", var(--font-body-family), "Open Sans", system-ui, sans-serif;
+  /* Mobile radii. Controls are square and containers are soft — that
+     contrast is the main thing carrying the look, so do not round a
+     button or sharpen a card without changing both platforms. */
+  --radius-control: 0px;
+  /* The primary action is the one control that is not perfectly square. */
+  --radius-primary: 2px;
+  --radius-chip: 12px;
+  --radius-card: 20px;
+  --radius-sheet: 22px;
 
-  --radius-glass: 8px;
-  --radius-control: 5px;
-
-  /* Two control scales. `control` is the dense Win7 dialog metric; `action` is
-     the larger web target used for forms. Both live here so no component
-     hardcodes a height. */
+  /* Mobile control metrics: 52px button, 56px field. */
   --text-control: 13px;
   --spacing-control: 2.125rem;
-  --text-action: 0.875rem;
-  --spacing-action: 2.75rem;
+  --text-action: 1rem;
+  --spacing-action: 3.25rem;
+  --spacing-field: 3.5rem;
 
   /* Rail width is consumed by both SideRail (w-rail) and the app shell's
      content offset (pl-rail); they must not drift apart. */
   --spacing-rail: 4.5rem;
   --spacing-rail-wide: 15rem;
 
-
-  --animate-aurora: aurora 22s ease-in-out infinite alternate;
   --animate-rise: rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-sheet: sheet 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-fade: fade 450ms ease-out both;
   --animate-pulse-sun: pulse-sun 3200ms ease-in-out infinite;
-  --animate-drift: drift 26s ease-in-out infinite alternate;
-  --animate-sheen: sheen 7s ease-in-out infinite;
   --animate-panel-expand: panel-expand 340ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 /* ─── keyframes ─────────────────────────────────────────────── */
-
-@keyframes aurora {
-  from { transform: translate3d(0, 0, 0) scale(1); }
-  to   { transform: translate3d(4%, -6%, 0) scale(1.18); }
-}
-
-@keyframes drift {
-  from { transform: translate3d(0, 0, 0); }
-  to   { transform: translate3d(0, -26px, 0); }
-}
-
-@keyframes sheen {
-  0%, 100% { opacity: 0.35; transform: translateX(-12%); }
-  50%      { opacity: 0.7;  transform: translateX(12%); }
-}
 
 @keyframes rise {
   from { opacity: 0; transform: translateY(16px); }
@@ -138,7 +151,8 @@
   }
 
   ::selection {
-    background: rgb(var(--aero-cyan-rgb) / 0.3);
+    background: rgb(var(--lime-rgb) / 0.3);
+    color: var(--color-paper);
   }
 
   /* Firefox paints its own `field` background on inputs and it survives a
@@ -162,8 +176,8 @@
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus {
     -webkit-text-fill-color: var(--color-paper);
-    -webkit-box-shadow: 0 0 0 1000px rgba(4, 10, 16, 0.96) inset;
-    caret-color: var(--color-paper);
+    -webkit-box-shadow: 0 0 0 1000px var(--color-ink-field) inset;
+    caret-color: var(--color-lime);
     transition: background-color 9999s ease-in-out 0s;
   }
 
@@ -184,19 +198,18 @@
     outline: none;
   }
 
-  /* Aero focus is a glow, not a ring */
+  /* Keyboard focus is a flat lime ring — the one place lime is spent
+     outside a primary action, because it has to beat every cobalt edge
+     on the page. Inputs opt into their own ring via `.field-focus` on
+     the well, so this rule must not also fire on a bare <input>. */
   button:focus-visible,
-  a:focus-visible,
-  input:focus-visible,
-  textarea:focus-visible {
-    box-shadow:
-      0 0 0 1px rgb(var(--aero-cyan-rgb) / 0.85),
-      0 0 14px 0 rgb(var(--aero-cyan-rgb) / 0.55);
+  a:focus-visible {
+    box-shadow: 0 0 0 2px var(--color-ink), 0 0 0 4px rgb(var(--lime-rgb) / 0.9);
   }
 
   * {
     scrollbar-width: thin;
-    scrollbar-color: rgb(var(--aero-cyan-rgb) / 0.28) transparent;
+    scrollbar-color: rgb(var(--cobalt-rgb) / 0.5) transparent;
   }
 
   *::-webkit-scrollbar {
@@ -205,261 +218,110 @@
   }
 
   *::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.03);
+    background: transparent;
   }
 
   *::-webkit-scrollbar-thumb {
     border-radius: 9999px;
     border: 2px solid transparent;
     background-clip: padding-box;
-    background-color: rgba(120, 200, 235, 0.26);
+    background-color: rgb(var(--cobalt-rgb) / 0.5);
   }
 
   *::-webkit-scrollbar-thumb:hover {
-    background-color: rgb(var(--aero-cyan-rgb) / 0.45);
+    background-color: var(--color-cobalt);
   }
 }
 
-/* ─── glass surfaces ────────────────────────────────────────── */
+/* ─── flat surfaces ─────────────────────────────────────────── */
 
-/* The workhorse panel: frosted, glossy, beveled. */
-@utility glass {
-  position: relative;
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.12) 0%,
-      rgba(255, 255, 255, 0.055) 45%,
-      rgba(255, 255, 255, 0.03) 62%,
-      rgba(255, 255, 255, 0.05) 100%
-    ),
-    rgba(10, 16, 22, 0.58);
-  backdrop-filter: blur(26px) saturate(185%);
-  -webkit-backdrop-filter: blur(26px) saturate(185%);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.4),
-    inset 0 -1px 0 0 rgba(0, 0, 0, 0.5),
-    inset 0 0 22px -8px rgb(var(--aero-cyan-rgb) / 0.22),
-    0 18px 48px -22px rgba(0, 0, 0, 0.95);
+/* The workhorse card: a flat white veil and one hairline. */
+@utility surface {
+  background: var(--color-surface-fill);
+  border: 1px solid var(--color-line);
 }
 
-@utility glass-subtle {
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.075) 0%,
-      rgba(255, 255, 255, 0.035) 48%,
-      rgba(255, 255, 255, 0.012) 50%,
-      rgba(255, 255, 255, 0.03) 100%
-    ),
-    rgba(8, 13, 18, 0.42);
-  backdrop-filter: blur(16px) saturate(150%);
-  -webkit-backdrop-filter: blur(16px) saturate(150%);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.22),
-    inset 0 -1px 0 0 rgba(0, 0, 0, 0.35);
+/* Chips, pills and inline tags that sit inside a surface. */
+@utility surface-subtle {
+  background: var(--color-surface-strong);
+  border: 1px solid var(--color-line);
 }
 
-/* Dialogs and the sign-in shell — more lift, stronger rim light. */
-@utility glass-raised {
-  position: relative;
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.16) 0%,
-      rgba(255, 255, 255, 0.07) 44%,
-      rgba(255, 255, 255, 0.035) 64%,
-      rgba(255, 255, 255, 0.06) 100%
-    ),
-    rgba(9, 15, 21, 0.72);
-  backdrop-filter: blur(36px) saturate(200%);
-  -webkit-backdrop-filter: blur(36px) saturate(200%);
-  border: 1px solid rgba(160, 228, 255, 0.3);
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.55),
-    inset 0 -1px 0 0 rgba(0, 0, 0, 0.6),
-    inset 0 0 34px -10px rgb(var(--aero-cyan-rgb) / 0.3),
-    0 30px 80px -28px rgba(0, 0, 0, 1),
-    0 0 42px -18px rgb(var(--aero-azure-rgb) / 0.5);
+/* Sheets and dialogs are opaque, not translucent: content scrolling
+   under a see-through sheet is the one thing that reads as cheap. */
+@utility surface-raised {
+  background: var(--color-ink-raised);
+  border: 1px solid var(--color-line);
 }
 
-/* Taskbar-style chrome: nav rails and bottom bars. */
-@utility glass-bar {
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.14) 0%,
-      rgba(255, 255, 255, 0.06) 48%,
-      rgba(255, 255, 255, 0.02) 50%,
-      rgba(90, 180, 220, 0.07) 100%
-    ),
-    rgba(6, 11, 16, 0.76);
-  backdrop-filter: blur(30px) saturate(190%);
-  -webkit-backdrop-filter: blur(30px) saturate(190%);
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.42),
-    inset 0 -1px 0 0 rgba(0, 0, 0, 0.55),
-    0 20px 56px -20px rgba(0, 0, 0, 1);
+/* The floating nav chrome, and the only blurred surface left — the
+   mobile tab bar is translucent and everything else is not. */
+@utility bar {
+  background: rgba(20, 20, 20, 0.72);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 1px solid var(--color-line-strong);
 }
 
-/* Inputs are SUNKEN in Aero — the inverse bevel of a button. */
-@utility glass-field {
-  background:
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.26) 100%),
-    rgba(255, 255, 255, 0.035);
-  backdrop-filter: blur(12px) saturate(140%);
-  -webkit-backdrop-filter: blur(12px) saturate(140%);
-  border: 1px solid rgba(0, 0, 0, 0.6);
-  border-radius: 4px;
-  box-shadow:
-    inset 0 2px 4px 0 rgba(0, 0, 0, 0.7),
-    inset 0 1px 0 0 rgba(0, 0, 0, 0.85),
-    0 1px 0 0 rgba(255, 255, 255, 0.14);
-  transition: box-shadow 180ms ease, border-color 180ms ease;
+/* Inputs: flat well, square corners, one hairline. Cobalt on focus. */
+@utility field {
+  background: var(--color-ink-field);
+  border: 1px solid var(--color-line-strong);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
 }
 
-@utility glass-field-invalid {
-  border-color: color-mix(in oklab, var(--color-danger) 70%, transparent);
-  box-shadow:
-    inset 0 2px 4px 0 rgba(0, 0, 0, 0.6),
-    0 0 0 1px color-mix(in oklab, var(--color-danger) 50%, transparent);
+@utility field-focus {
+  border-color: var(--color-cobalt);
+  box-shadow: 0 0 0 1px var(--color-cobalt);
 }
 
-@utility glass-field-focus {
-  border-color: rgb(var(--aero-cyan-rgb) / 0.7);
-  box-shadow:
-    inset 0 2px 4px 0 rgba(0, 0, 0, 0.6),
-    0 1px 0 0 rgba(255, 255, 255, 0.14),
-    0 0 0 1px rgb(var(--aero-cyan-rgb) / 0.5),
-    0 0 16px 0 rgb(var(--aero-cyan-rgb) / 0.4);
+@utility field-invalid {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 1px var(--color-danger);
 }
 
-/* ─── glossy controls ───────────────────────────────────────── */
+/* ─── flat controls ─────────────────────────────────────────── */
 
-/* The Vista button: gradient, hard gloss break, bevel, hover glow. */
-@utility aero-button {
-  position: relative;
-  overflow: hidden;
-  border-radius: 5px;
-  border: 1px solid rgba(0, 0, 0, 0.72);
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.26) 0%,
-      rgba(255, 255, 255, 0.13) 48%,
-      rgba(255, 255, 255, 0.03) 50%,
-      rgba(255, 255, 255, 0.11) 100%
-    ),
-    linear-gradient(to bottom, #1d2b38 0%, #0d1620 100%);
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.5),
-    inset 0 -1px 0 0 rgba(0, 0, 0, 0.5),
-    0 1px 2px 0 rgba(0, 0, 0, 0.8);
-  transition: box-shadow 160ms ease, filter 160ms ease;
+/* Secondary action: a solid cobalt block. Square, like every control. */
+@utility btn {
+  background: var(--color-cobalt);
+  border: 1px solid var(--color-cobalt);
+  transition: background-color 160ms ease, border-color 160ms ease, opacity 160ms ease;
 }
 
-@utility aero-button-hover {
-  filter: brightness(1.22);
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.65),
-    inset 0 -1px 0 0 rgba(0, 0, 0, 0.5),
-    inset 0 0 20px -4px rgb(var(--aero-cyan-rgb) / 0.5),
-    0 0 18px 0 rgb(var(--aero-cyan-rgb) / 0.42),
-    0 1px 2px 0 rgba(0, 0, 0, 0.8);
+@utility btn-hover {
+  background: var(--color-cobalt-bright);
+  border-color: var(--color-cobalt-bright);
 }
 
-/* Primary call to action — the azure Aero fill. */
-@utility aero-button-primary {
-  border-color: rgba(0, 40, 70, 0.9);
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.42) 0%,
-      rgba(255, 255, 255, 0.18) 48%,
-      rgba(255, 255, 255, 0.04) 50%,
-      rgba(255, 255, 255, 0.16) 100%
-    ),
-    linear-gradient(to bottom, #39a9e6 0%, #1667ad 52%, #0d4a86 100%);
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.75),
-    inset 0 -1px 0 0 rgba(0, 0, 0, 0.4),
-    0 0 16px -2px rgb(var(--aero-azure-rgb) / 0.5),
-    0 1px 2px 0 rgba(0, 0, 0, 0.8);
+/* The one place acid lime is spent as a fill. Its label is ink, because
+   lime this saturated measures 1.05:1 against white. */
+@utility btn-primary {
+  background: var(--color-lime);
+  border: 1px solid var(--color-lime);
+  border-radius: var(--radius-primary);
 }
 
-/* Specular sweep laid over a panel's top-left corner. */
-@utility aero-sheen {
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0 0 auto 0;
-    height: 62%;
-    border-radius: inherit;
-    /* Fades to nothing at its own edge; a hard stop here reads as a seam
-       across the middle of the panel. */
-    background: linear-gradient(
-      160deg,
-      rgba(255, 255, 255, 0.16) 0%,
-      rgba(255, 255, 255, 0.05) 38%,
-      rgba(255, 255, 255, 0.015) 70%,
-      transparent 100%
-    );
-    pointer-events: none;
-  }
+@utility btn-primary-hover {
+  background: #d9ff3d;
+  border-color: #d9ff3d;
 }
 
-/* Hairline divider with a light bottom edge, like a Win7 group separator. */
-@utility aero-rule {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.6);
-  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.09);
+/* Hairline divider. */
+@utility rule {
+  border-bottom: 1px solid var(--color-line);
 }
 
-/* Cyan rim used on the active nav item. */
-@utility aero-active {
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(140, 225, 255, 0.26) 0%,
-      rgba(90, 190, 240, 0.12) 48%,
-      rgba(40, 130, 190, 0.07) 50%,
-      rgba(70, 170, 220, 0.14) 100%
-    );
-  border: 1px solid rgba(130, 220, 255, 0.45);
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.45),
-    inset 0 0 18px -6px rgb(var(--aero-cyan-rgb) / 0.6),
-    0 0 14px -4px rgb(var(--aero-cyan-rgb) / 0.4);
-}
-
-@utility aero-text-shadow {
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.85);
-}
-
-@utility aero-bubble {
-  border: 1px solid rgb(var(--aero-cyan-rgb) / 0.16);
-  background: radial-gradient(
-    circle at 32% 26%,
-    rgba(255, 255, 255, 0.75) 0%,
-    rgb(var(--aero-cyan-rgb) / 0.26) 14%,
-    rgb(var(--aero-azure-rgb) / 0.13) 46%,
-    rgba(6, 28, 44, 0.06) 72%
-  );
-  box-shadow:
-    inset 0 -6px 14px -6px rgb(var(--aero-cyan-rgb) / 0.5),
-    inset 0 4px 10px -4px rgba(255, 255, 255, 0.45),
-    0 0 26px -6px rgb(var(--aero-cyan-rgb) / 0.28);
-}
-
-@utility aero-glow-text {
-  text-shadow: 0 0 14px rgb(var(--aero-cyan-rgb) / 0.55), 0 1px 2px rgba(0, 0, 0, 0.9);
+/* The active nav pill. Nav state is "important", not "the action", so
+   it is cobalt and never lime. */
+@utility nav-active {
+  background: rgb(var(--cobalt-rgb) / 0.22);
+  border: 1.5px solid rgb(var(--cobalt-rgb) / 0.7);
 }
 
 @utility display-title {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.02em;
 }
 

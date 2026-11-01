@@ -18,8 +18,9 @@ export interface Orbit {
   readonly clockwise: boolean;
 }
 
+/** One lime dot to two cobalt keeps the mark on the palette's 10% share. */
 export const ORBITS: readonly Orbit[] = [
-  { id: 'red', color: 'var(--color-orbit-red)', ring: SOLAR.rings[0], durationMs: 4000, clockwise: true },
-  { id: 'violet', color: 'var(--color-orbit-violet)', ring: SOLAR.rings[1], durationMs: 6500, clockwise: false },
-  { id: 'blue', color: 'var(--color-orbit-blue)', ring: SOLAR.rings[2], durationMs: 9000, clockwise: true },
+  { id: 'lime', color: 'var(--color-orbit-lime)', ring: SOLAR.rings[0], durationMs: 4000, clockwise: true },
+  { id: 'cobalt', color: 'var(--color-orbit-cobalt)', ring: SOLAR.rings[1], durationMs: 6500, clockwise: false },
+  { id: 'pale', color: 'var(--color-orbit-pale)', ring: SOLAR.rings[2], durationMs: 9000, clockwise: true },
 ];
