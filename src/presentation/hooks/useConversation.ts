@@ -10,9 +10,13 @@ import {
 } from '../../domain/entities/Message';
 import { useUseCases } from '../container/DependencyProvider';
 import { queryKeys } from '../query/queryKeys';
+import { useRealtime } from './useRealtime';
 import { useSession } from './useSession';
 
-const POLL_MS = 8_000;
+// Degraded-mode fallback only: while connected, message:new appends to this cache
+// directly (see useRealtime) so there is nothing for a poll to add. This interval only
+// matters if the socket can't connect at all.
+const DEGRADED_POLL_MS = 8_000;
 
 const createNonce = (): string =>
   `local_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
@@ -34,6 +38,7 @@ export const useConversation = (conversationId: string | null): ConversationView
   const useCases = useUseCases();
   const queryClient = useQueryClient();
   const { viewerId } = useSession();
+  const { status } = useRealtime(conversationId);
   const marked = useRef<string | null>(null);
   const queryKey = queryKeys.messages(conversationId ?? '', viewerId);
 
@@ -42,7 +47,7 @@ export const useConversation = (conversationId: string | null): ConversationView
     queryFn: ({ signal }) =>
       useCases.loadMessages.execute(conversationId ?? '', { viewerId, signal }),
     enabled: Boolean(conversationId),
-    refetchInterval: POLL_MS,
+    refetchInterval: status === 'online' ? false : DEGRADED_POLL_MS,
   });
 
   const replace = useCallback(
