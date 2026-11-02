@@ -22,15 +22,20 @@ import { ROUTES } from '@/src/presentation/navigation/routes';
  *
  * The one documented exception: a conversation thread manages its own
  * edge-to-edge header/composer with its own clearance (DirectMessageScreen),
- * so it bleeds past this default rather than doubling up on it. Route-aware
- * is not pretty, but splitting the frame into a float-away wrapper component
+ * so it bleeds past this default rather than doubling up on it, and the tab
+ * bar is unmounted there so it cannot overlap that composer. Route-aware is
+ * not pretty, but splitting the frame into a float-away wrapper component
  * would just move the same conditional into every screen instead of here.
  */
 export const AppChrome = ({ children }: { readonly children: ReactNode }) => {
   const [composing, setComposing] = useState(false);
   const open = () => setComposing(true);
   const pathname = usePathname();
-  const bleed = pathname.startsWith(`${ROUTES.CHATS}/`);
+  // A conversation thread is a focused, full-height surface with its own
+  // composer pinned to the bottom edge. The floating tab bar would sit on top
+  // of that composer on mobile, so the thread replaces the nav rather than
+  // stacking under it — the back arrow in its header is the way out.
+  const inThread = pathname.startsWith(`${ROUTES.CHATS}/`);
 
   return (
     <>
@@ -42,9 +47,9 @@ export const AppChrome = ({ children }: { readonly children: ReactNode }) => {
       </a>
       <SideRail onCompose={open} />
       <div className="md:pl-rail xl:pl-rail-wide">
-        <div className={bleed ? '' : 'px-4 tabbar-clear md:pb-0'}>{children}</div>
+        <div className={inThread ? '' : 'px-4 tabbar-clear md:pb-0'}>{children}</div>
       </div>
-      <GlassTabBar onCompose={open} />
+      {inThread ? null : <GlassTabBar onCompose={open} />}
       <ComposerDialog open={composing} onClose={() => setComposing(false)} />
     </>
   );
