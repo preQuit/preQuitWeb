@@ -76,7 +76,7 @@ export const DirectMessageScreen = () => {
   const showEmpty = !isLoading && !error && messages.length === 0;
 
   return (
-    <main id="main-content" tabIndex={-1} className="flex min-h-dvh flex-col">
+    <main id="main-content" tabIndex={-1} className="flex h-full min-h-0 flex-col">
       <header className="sticky top-0 z-20 flex items-center gap-3 border-b border-line bg-ink px-3 py-3">
         <Link
           href={ROUTES.CHATS}
@@ -94,7 +94,7 @@ export const DirectMessageScreen = () => {
         </div>
       </header>
 
-      <div className="mx-auto flex w-full max-w-[640px] flex-1 flex-col justify-end px-3 py-4">
+      <div className="mx-auto flex w-full max-w-[640px] flex-1 flex-col justify-end overflow-y-auto px-3 py-4">
         {isLoading ? (
           <div className="flex justify-center py-16">
             <Spinner />

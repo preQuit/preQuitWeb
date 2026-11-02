@@ -18,12 +18,16 @@ export interface ChatsLayoutProps {
  * single-pane, same as before.
  */
 const ChatsLayout = ({ children }: ChatsLayoutProps) => (
-  <div className="mx-auto flex w-full max-w-5xl flex-1 lg:min-h-dvh">
-    <aside className="hidden w-[360px] shrink-0 flex-col lg:flex lg:border-r lg:border-line">
+  // h-dvh with overflow-hidden, not min-h-dvh: the two panes must scroll
+  // independently. Letting the row grow past the viewport makes the whole
+  // page the scroll container, so scrolling a long thread drags the
+  // conversation list up with it.
+  <div className="mx-auto flex h-dvh w-full max-w-5xl overflow-hidden">
+    <aside className="hidden w-[360px] shrink-0 flex-col overflow-y-auto lg:flex lg:border-r lg:border-line">
       <ScreenHeader title="Chats" />
       <ConversationList />
     </aside>
-    <div className="flex-1">{children}</div>
+    <div className="flex min-w-0 flex-1 flex-col overflow-hidden">{children}</div>
   </div>
 );
 
