@@ -43,6 +43,7 @@ export const FollowersScreen = () => {
                 key={item.userId}
                 userId={item.userId}
                 since={item.since}
+                user={item.user ?? null}
                 trailing={
                   canManage ? (
                     <GlassButton

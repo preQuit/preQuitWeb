@@ -33,7 +33,7 @@ export const FollowingScreen = () => {
         <>
           <div className="flex flex-col divide-y divide-line">
             {items.map(item => (
-              <PersonRow key={item.userId} userId={item.userId} since={item.since} />
+              <PersonRow key={item.userId} userId={item.userId} since={item.since} user={item.user ?? null} />
             ))}
           </div>
           <div ref={sentinel} aria-hidden className="h-px" />

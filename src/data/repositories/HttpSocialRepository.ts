@@ -9,16 +9,19 @@ import type {
 } from '../../domain/repositories/SocialRepository';
 import type { Page, PageOptions, RequestOptions } from '../../domain/repositories/common';
 import type { HttpClient } from '../http/HttpClient';
+import { createUser } from '../../domain/entities/User';
 import { toUserList } from '../mappers/UserMapper';
 
 interface FollowerEdgeDto {
   readonly followerId: string;
   readonly createdAt: string;
+  readonly user?: UserPayload | null;
 }
 
 interface FollowingEdgeDto {
   readonly followeeId: string;
   readonly createdAt: string;
+  readonly user?: UserPayload | null;
 }
 
 // The blocks endpoint serializes the domain UserId instance as-is instead of
@@ -51,7 +54,11 @@ export class HttpSocialRepository implements SocialRepository {
       ...(signal ? { signal } : {}),
     });
     return {
-      items: page.items.map(row => ({ userId: row.followerId, since: row.createdAt })),
+      items: page.items.map(row => ({
+        userId: row.followerId,
+        since: row.createdAt,
+        user: row.user ? createUser(row.user) : null,
+      })),
       nextCursor: page.nextCursor,
     };
   }
@@ -63,14 +70,19 @@ export class HttpSocialRepository implements SocialRepository {
       ...(signal ? { signal } : {}),
     });
     return {
-      items: page.items.map(row => ({ userId: row.followeeId, since: row.createdAt })),
+      items: page.items.map(row => ({
+        userId: row.followeeId,
+        since: row.createdAt,
+        user: row.user ? createUser(row.user) : null,
+      })),
       nextCursor: page.nextCursor,
     };
   }
 
   async mutuals(options: RequestOptions = {}): Promise<readonly string[]> {
-    const dto = await this.http.get<readonly string[]>('/me/mutuals', options);
-    return Array.isArray(dto) ? dto : [];
+    const dto = await this.http.get<readonly (string | UserPayload)[]>('/me/mutuals', options);
+    if (!Array.isArray(dto)) return [];
+    return dto.map(row => (typeof row === 'string' ? row : (row.id ?? ''))).filter(Boolean);
   }
 
   followRequests(

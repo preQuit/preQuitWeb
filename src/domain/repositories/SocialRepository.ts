@@ -38,6 +38,7 @@ export interface FollowResult {
 export interface FollowEdgeEntry {
   readonly userId: string;
   readonly since: string;
+  readonly user?: User | null;
 }
 
 export const FollowRequestDirection = {
