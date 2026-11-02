@@ -1,6 +1,8 @@
 'use client';
 
-import { Search as SearchIcon, SearchX, Tag, X } from 'lucide-react';
+import { ChevronRight, Search as SearchIcon, SearchX, Tag, UserRoundSearch, X } from 'lucide-react';
+
+import Link from 'next/link';
 
 import type { Topic } from '../../domain/entities/Topic';
 import { EmptyState } from '../components/EmptyState';
@@ -9,6 +11,7 @@ import { ScreenHeader } from '../components/ScreenHeader';
 import { SectionLabel } from '../components/SectionLabel';
 import { Spinner } from '../components/Spinner';
 import { useSearch } from '../hooks/useSearch';
+import { ROUTES } from '../navigation/routes';
 
 interface TopicTagProps {
   readonly topic: Topic;
@@ -58,6 +61,24 @@ export const SearchScreen = () => {
           </button>
         ) : null}
       </div>
+
+      {/* The side rail carries this link on desktop, but GlassTabBar renders
+          PRIMARY_NAV only — without this row /people is unreachable on mobile. */}
+      <Link
+        href={ROUTES.PEOPLE}
+        className="surface mt-3 flex items-center gap-3 rounded-2xl px-4 py-3.5 transition-colors hover:bg-cobalt/12 md:hidden"
+      >
+        <span className="surface-subtle flex size-9 shrink-0 items-center justify-center rounded-full">
+          <UserRoundSearch size={17} className="text-paper" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-[15px] font-semibold text-paper">Find friends</span>
+          <span className="block truncate text-[12px] text-muted">
+            Search people by name or @handle
+          </span>
+        </span>
+        <ChevronRight size={18} className="shrink-0 text-faint" />
+      </Link>
 
       <section className="mt-6 flex flex-col gap-3">
         <SectionLabel>{isActive ? 'Topics' : 'Trending topics'}</SectionLabel>

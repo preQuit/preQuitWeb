@@ -1,4 +1,4 @@
-import { Home, MessagesSquare, Search, Settings, User, Users, type LucideIcon } from 'lucide-react';
+import { Home, MessagesSquare, Search, Settings, User, UserRoundSearch, Users, type LucideIcon } from 'lucide-react';
 
 import { SOCIAL_GRAPH_ROUTES } from './socialRoutes';
 import { ROUTES } from './routes';
@@ -27,6 +27,7 @@ export const PRIMARY_NAV: readonly NavItem[] = [
  * gives them rather than a fifth tab-bar icon.
  */
 export const SECONDARY_NAV: readonly NavItem[] = [
+  { href: ROUTES.PEOPLE, label: 'Find people', icon: UserRoundSearch },
   { href: SOCIAL_GRAPH_ROUTES.root, label: 'Friends', icon: Users },
   { href: ROUTES.SETTINGS, label: 'Settings', icon: Settings },
 ];

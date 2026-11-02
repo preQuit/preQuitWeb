@@ -5,6 +5,7 @@ export const ROUTES = {
   RESET_PASSWORD: '/reset-password',
   FEED: '/feed',
   SEARCH: '/search',
+  PEOPLE: '/people',
   CHATS: '/chats',
   PROFILE: '/profile',
   SETTINGS: '/settings',
