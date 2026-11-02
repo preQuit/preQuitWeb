@@ -19,6 +19,12 @@ import { ROUTES } from '../navigation/routes';
 const statusOf = (message: Message): string => {
   if (message.delivery === MessageDelivery.FAILED) return 'Not delivered';
   if (message.delivery === MessageDelivery.PENDING) return 'Sending…';
+  // Only the sender cares whether their own message landed; showing "Read" on
+  // the other person's message would be nonsense.
+  if (message.mine && message.delivery === MessageDelivery.READ) return `Read · ${formatClock(message.createdAt)}`;
+  if (message.mine && message.delivery === MessageDelivery.DELIVERED) {
+    return `Delivered · ${formatClock(message.createdAt)}`;
+  }
   return formatClock(message.createdAt);
 };
 

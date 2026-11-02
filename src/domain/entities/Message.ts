@@ -1,6 +1,10 @@
 export const MessageDelivery = {
   PENDING: 'pending',
   SENT: 'sent',
+  // The server reports these from per-message receipts and the conversation's
+  // read high-water mark; without them a double tick has no state to render.
+  DELIVERED: 'delivered',
+  READ: 'read',
   FAILED: 'failed',
 } as const;
 
@@ -33,7 +37,21 @@ export interface Message {
   readonly clientNonce?: string;
 }
 
-export type MessagePayload = Partial<Omit<Message, 'mine'>>;
+export type MessagePayload = Partial<Omit<Message, 'mine'>> & {
+  /** The server's own name for delivery state on REST and socket payloads. */
+  readonly state?: string;
+};
+
+const DELIVERY_STATES = new Set<string>(Object.values(MessageDelivery));
+
+// The server calls this `state`; the client calls it `delivery`. Reading only
+// `delivery` meant every message rendered as "sent" no matter what the
+// receipts said.
+const toDelivery = (raw: MessagePayload): MessageDeliveryState => {
+  if (raw.delivery) return raw.delivery;
+  if (raw.state && DELIVERY_STATES.has(raw.state)) return raw.state as MessageDeliveryState;
+  return MessageDelivery.SENT;
+};
 
 export const createMessage = (
   raw: MessagePayload = {},
@@ -48,7 +66,7 @@ export const createMessage = (
   media: raw.media ?? null,
   replyToId: raw.replyToId ?? null,
   reactions: raw.reactions ?? [],
-  delivery: raw.delivery ?? MessageDelivery.SENT,
+  delivery: toDelivery(raw),
   createdAt: raw.createdAt ?? null,
 });
 
