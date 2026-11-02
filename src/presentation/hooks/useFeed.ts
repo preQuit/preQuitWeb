@@ -22,6 +22,7 @@ export interface FeedViewModel {
   loadMore(): void;
   toggleLike(postId: string): void;
   toggleSave(postId: string): void;
+  deletePost(postId: string): void;
 }
 
 type Transform = (post: Post) => Post;
@@ -90,6 +91,31 @@ export const useFeed = (
     onError: (_error, post) => patch(post.id, () => post),
   });
 
+  /** Drop one post from every loaded page. */
+  const drop = useCallback(
+    (postId: string) => {
+      queryClient.setQueryData<FeedPages>(queryKey, current =>
+        current
+          ? {
+              ...current,
+              pages: current.pages.map(page => ({
+                ...page,
+                items: page.items.filter(item => item.id !== postId),
+              })),
+            }
+          : current,
+      );
+    },
+    [queryClient, queryKey],
+  );
+
+  const deleteMutation = useMutation({
+    mutationFn: (postId: string) => useCases.deletePost.execute(postId),
+    // The row is removed optimistically; a failure puts the feed back by
+    // refetching rather than trying to splice the post into its old position.
+    onError: () => void feed.refetch(),
+  });
+
   const toggle = useCallback(
     (postId: string, transform: Transform, commit: (post: Post) => void) => {
       const current = postOf(postId);
@@ -123,5 +149,9 @@ export const useFeed = (
     },
     toggleLike: postId => toggle(postId, withLikeToggled, post => likeMutation.mutate(post)),
     toggleSave: postId => toggle(postId, withSaveToggled, post => saveMutation.mutate(post)),
+    deletePost: postId => {
+      drop(postId);
+      deleteMutation.mutate(postId);
+    },
   };
 };

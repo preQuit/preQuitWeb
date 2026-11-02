@@ -70,7 +70,7 @@ const ProfileShell = ({ children }: { readonly children: ReactNode }) => (
 );
 
 export const ProfileScreen = () => {
-  const { profile, posts, isLoading, isRefreshing, error, refresh } = useMyProfile();
+  const { profile, posts, isLoading, isRefreshing, error, refresh, deletePost } = useMyProfile();
   const [activePost, setActivePost] = useState<Post | null>(null);
 
   if (isLoading) {
@@ -186,7 +186,12 @@ export const ProfileScreen = () => {
         ) : (
           <div className="grid grid-cols-1 gap-4 px-4 lg:grid-cols-2">
             {posts.map(post => (
-              <PostCard key={post.id} post={post} onOpenComments={setActivePost} />
+              <PostCard
+                key={post.id}
+                post={post}
+                onOpenComments={setActivePost}
+                onDelete={deletePost}
+              />
             ))}
           </div>
         )}

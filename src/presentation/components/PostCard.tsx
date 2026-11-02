@@ -8,6 +8,7 @@ import { getTelemetryClient } from '../../data/telemetry/TelemetryClient';
 import { useImpressionTracking } from '../hooks/useImpressionTracking';
 import { formatCount, formatRelative } from '../format';
 import { Avatar } from './Avatar';
+import { ConfirmDialog } from './ConfirmDialog';
 
 export interface PostCardProps {
   readonly post: Post;
@@ -18,6 +19,7 @@ export interface PostCardProps {
   onOpenComments?(post: Post): void;
   onHide?(postId: string): void;
   onNotInterested?(postId: string): void;
+  onDelete?(postId: string): void;
 }
 
 const PostCardView = ({
@@ -29,13 +31,16 @@ const PostCardView = ({
   onOpenComments,
   onHide,
   onNotInterested,
+  onDelete,
 }: PostCardProps) => {
   const [mediaFailed, setMediaFailed] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [dismissed, setDismissed] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
   const cardRef = useImpressionTracking<HTMLElement>(post.id, { surface });
   const { author, counts, viewer } = post;
   const image = post.media[0];
+  const canDelete = Boolean(onDelete) && viewer.canDelete;
   const published = formatRelative(post.publishedAt);
 
   if (dismissed) return null;
@@ -52,6 +57,12 @@ const PostCardView = ({
     setDismissed(true);
     if (onNotInterested) onNotInterested(post.id);
     else void getTelemetryClient().markNotInterested(post.id);
+  };
+
+  const confirmDelete = (): void => {
+    setConfirmingDelete(false);
+    setDismissed(true);
+    onDelete?.(post.id);
   };
 
   return (
@@ -100,6 +111,18 @@ const PostCardView = ({
                 >
                   Not interested
                 </button>
+                {canDelete ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      setConfirmingDelete(true);
+                    }}
+                    className="block w-full border-t border-line px-3.5 py-2.5 text-left text-[13px] text-danger hover:bg-surface-fill"
+                  >
+                    Delete post
+                  </button>
+                ) : null}
               </div>
             </>
           ) : null}
@@ -179,6 +202,16 @@ const PostCardView = ({
           />
         </button>
       </footer>
+      <ConfirmDialog
+        open={confirmingDelete}
+        title="Are you sure?"
+        body="This post and its comments, likes and saves are removed from the database for good. There is no undo."
+        confirmLabel="Delete post"
+        imageSrc="/media/are-you-sure.gif"
+        imageAlt=""
+        onConfirm={confirmDelete}
+        onCancel={() => setConfirmingDelete(false)}
+      />
     </article>
   );
 };

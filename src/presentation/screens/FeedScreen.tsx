@@ -46,6 +46,7 @@ export const FeedScreen = () => {
     loadMore,
     toggleLike,
     toggleSave,
+    deletePost,
   } = useFeed(surface);
   const sentinel = useInfiniteScroll<HTMLDivElement>(loadMore, hasMore);
   const { open } = useOpenConversation();
@@ -120,6 +121,7 @@ export const FeedScreen = () => {
                 onToggleSave={toggleSave}
                 onOpenAuthor={openAuthorChat}
                 onOpenComments={setActivePost}
+                onDelete={deletePost}
               />
             ))}
           </div>

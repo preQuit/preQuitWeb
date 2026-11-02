@@ -31,6 +31,10 @@ export class HttpPostRepository implements PostRepository {
     return this.http.delete(`/posts/${postId}/saves`);
   }
 
+  async remove(postId: string): Promise<void> {
+    await this.http.delete(`/posts/${postId}`);
+  }
+
   async comments(postId: string, options: PageOptions = {}): Promise<readonly Comment[]> {
     const { limit = 20, before, signal } = options;
     const page = await this.http.getPage<CommentPayload>(`/posts/${postId}/comments`, {
