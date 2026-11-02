@@ -24,6 +24,7 @@ const createNonce = (): string =>
 interface Outgoing {
   readonly body: string;
   readonly clientNonce: string;
+  readonly replyToId?: string | null;
 }
 
 export interface ConversationViewModel {
@@ -31,14 +32,19 @@ export interface ConversationViewModel {
   readonly isLoading: boolean;
   readonly isSending: boolean;
   readonly error: unknown;
-  send(body: string): Promise<void>;
+  /** Peer ids currently typing in this thread, never the viewer. */
+  readonly typingUserIds: readonly string[];
+  send(body: string, replyToId?: string | null): Promise<void>;
+  notifyTyping(): void;
+  stopTyping(): void;
+  deleteMessage(messageId: string, forEveryone: boolean): Promise<void>;
 }
 
 export const useConversation = (conversationId: string | null): ConversationViewModel => {
   const useCases = useUseCases();
   const queryClient = useQueryClient();
   const { viewerId } = useSession();
-  const { status } = useRealtime(conversationId);
+  const { status, typingUserIds, notifyTyping, stopTyping } = useRealtime(conversationId);
   const marked = useRef<string | null>(null);
   const queryKey = queryKeys.messages(conversationId ?? '', viewerId);
 
@@ -66,15 +72,16 @@ export const useConversation = (conversationId: string | null): ConversationView
   }, [conversationId, useCases]);
 
   const sendMutation = useMutation({
-    mutationFn: ({ body, clientNonce }: Outgoing) =>
-      useCases.sendMessage.execute(conversationId ?? '', { body, clientNonce, viewerId }),
-    onMutate: ({ body, clientNonce }) => {
+    mutationFn: ({ body, clientNonce, replyToId }: Outgoing) =>
+      useCases.sendMessage.execute(conversationId ?? '', { body, clientNonce, viewerId, replyToId }),
+    onMutate: ({ body, clientNonce, replyToId }) => {
       const pending = createPendingMessage({
         clientNonce,
         conversationId: conversationId ?? '',
         senderId: viewerId ?? '',
         body,
         createdAt: new Date().toISOString(),
+        replyToId,
       });
       queryClient.setQueryData<readonly Message[]>(queryKey, current => [
         ...(current ?? []),
@@ -88,15 +95,37 @@ export const useConversation = (conversationId: string | null): ConversationView
     onError: (_error, { clientNonce }) => replace(clientNonce, withDeliveryFailed),
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: ({ messageId, forEveryone }: { messageId: string; forEveryone: boolean }) =>
+      useCases.messageActions.delete(messageId, forEveryone),
+    onMutate: ({ messageId }) => {
+      const previous = queryClient.getQueryData<readonly Message[]>(queryKey);
+      queryClient.setQueryData<readonly Message[]>(queryKey, current =>
+        (current ?? []).filter(message => message.id !== messageId),
+      );
+      return { previous };
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previous) queryClient.setQueryData(queryKey, context.previous);
+    },
+  });
+
   return {
     messages: messages.data ?? [],
     isLoading: Boolean(conversationId) && messages.isPending,
     isSending: sendMutation.isPending,
     error: messages.error,
-    send: async body => {
+    typingUserIds,
+    send: async (body, replyToId = null) => {
       const trimmed = body.trim();
       if (!trimmed || !conversationId) return;
-      await sendMutation.mutateAsync({ body: trimmed, clientNonce: createNonce() });
+      stopTyping();
+      await sendMutation.mutateAsync({ body: trimmed, clientNonce: createNonce(), replyToId });
+    },
+    notifyTyping,
+    stopTyping,
+    deleteMessage: async (messageId, forEveryone) => {
+      await deleteMutation.mutateAsync({ messageId, forEveryone });
     },
   };
 };

@@ -29,6 +29,9 @@ import { SignInUseCase } from '../../application/auth/SignInUseCase';
 import { SignOutUseCase } from '../../application/auth/SignOutUseCase';
 import { SignUpUseCase } from '../../application/auth/SignUpUseCase';
 import { AddCommentUseCase } from '../../application/engagement/AddCommentUseCase';
+import { ConversationActionsUseCase } from '../../application/messaging/ConversationActionsUseCase';
+import { MessageActionsUseCase } from '../../application/messaging/MessageActionsUseCase';
+import { DeletePostUseCase } from '../../application/content/DeletePostUseCase';
 import { LoadCommentsUseCase } from '../../application/engagement/LoadCommentsUseCase';
 import { ToggleLikeUseCase } from '../../application/engagement/ToggleLikeUseCase';
 import { ToggleSaveUseCase } from '../../application/engagement/ToggleSaveUseCase';
@@ -84,6 +87,7 @@ export interface UseCases {
   readonly toggleLike: ToggleLikeUseCase;
   readonly toggleSave: ToggleSaveUseCase;
   readonly loadComments: LoadCommentsUseCase;
+  readonly deletePost: DeletePostUseCase;
   readonly addComment: AddCommentUseCase;
   readonly search: SearchContentUseCase;
   readonly loadTrendingTopics: LoadTrendingTopicsUseCase;
@@ -103,6 +107,8 @@ export interface UseCases {
   readonly loadFollowing: LoadFollowingUseCase;
   readonly loadMutuals: LoadMutualsUseCase;
   readonly loadSuggested: LoadSuggestedUseCase;
+  readonly conversationActions: ConversationActionsUseCase;
+  readonly messageActions: MessageActionsUseCase;
   readonly loadFollowRequests: LoadFollowRequestsUseCase;
   readonly acceptFollowRequest: AcceptFollowRequestUseCase;
   readonly rejectFollowRequest: RejectFollowRequestUseCase;
@@ -154,6 +160,7 @@ const buildUseCases = (repositories: Repositories, session: SessionRepository): 
   toggleLike: new ToggleLikeUseCase(repositories.post),
   toggleSave: new ToggleSaveUseCase(repositories.post),
   loadComments: new LoadCommentsUseCase(repositories.post),
+  deletePost: new DeletePostUseCase(repositories.post),
   addComment: new AddCommentUseCase(repositories.post),
 
   search: new SearchContentUseCase(repositories.search),
@@ -177,6 +184,8 @@ const buildUseCases = (repositories: Repositories, session: SessionRepository): 
   loadFollowing: new LoadFollowingUseCase(repositories.social),
   loadMutuals: new LoadMutualsUseCase(repositories.social),
   loadSuggested: new LoadSuggestedUseCase(repositories.social),
+  conversationActions: new ConversationActionsUseCase(repositories.messaging, repositories.social),
+  messageActions: new MessageActionsUseCase(repositories.messaging),
   loadFollowRequests: new LoadFollowRequestsUseCase(repositories.social),
   acceptFollowRequest: new AcceptFollowRequestUseCase(repositories.social),
   rejectFollowRequest: new RejectFollowRequestUseCase(repositories.social),

@@ -338,6 +338,15 @@
    never invent two different numbers for the same gap again. Pair with
    `md:pb-0` at every call site — above `md` GlassTabBar is `md:hidden`, so
    the clearance has nothing to clear. */
+@keyframes typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.45; }
+  30% { transform: translateY(-3px); opacity: 1; }
+}
+
+@utility typing-dot {
+  animation: typing-bounce 1.2s infinite ease-in-out;
+}
+
 @utility tabbar-clear {
   padding-bottom: 7rem;
 }
