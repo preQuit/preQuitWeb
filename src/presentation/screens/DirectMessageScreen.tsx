@@ -56,7 +56,7 @@ const Bubble = ({ message, repliedTo, onReply, onInfo, onDelete }: BubbleProps) 
 
   return (
     <li
-      className={`group relative flex max-w-[78%] flex-col px-3.5 py-2.5 ${
+      className={`group relative flex max-w-[min(78%,620px)] flex-col px-3.5 py-2.5 ${
         message.mine
           ? 'self-end rounded-[18px] rounded-br-sm bg-cobalt text-paper'
           : 'surface self-start rounded-[18px] rounded-bl-sm text-paper'
@@ -187,7 +187,7 @@ export const DirectMessageScreen = () => {
   const showEmpty = !isLoading && !error && shownMessages.length === 0;
 
   return (
-    <main id="main-content" tabIndex={-1} className="flex h-screen min-h-0 flex-col overflow-hidden">
+    <main id="main-content" tabIndex={-1} className="flex h-dvh min-h-0 flex-col overflow-hidden">
       <header className="sticky top-0 z-20 flex items-center gap-3 border-b border-line bg-ink px-3 py-3">
         <Link
           href={ROUTES.CHATS}
@@ -293,7 +293,7 @@ export const DirectMessageScreen = () => {
         </div>
       ) : null}
 
-      <div className="mx-auto flex w-full max-w-[640px] flex-1 flex-col justify-end overflow-y-auto px-3 py-4">
+      <div className="flex w-full min-h-0 flex-1 flex-col justify-end overflow-y-auto px-4 py-4">
         {isLoading ? (
           <div className="flex justify-center py-16">
             <Spinner />
@@ -337,7 +337,7 @@ export const DirectMessageScreen = () => {
         className="sticky bottom-0 border-t border-line bg-ink px-3 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
       >
         {replyTo ? (
-          <div className="mx-auto mb-2 flex w-full max-w-[640px] items-center gap-2 rounded-xl border-l-2 border-cobalt bg-surface-fill px-3 py-2">
+          <div className="mb-2 flex w-full items-center gap-2 rounded-xl border-l-2 border-cobalt bg-surface-fill px-3 py-2">
             <CornerUpLeft size={14} className="shrink-0 text-cobalt" />
             <span className="min-w-0 flex-1">
               <span className="block text-[11px] font-semibold text-cobalt">
@@ -356,7 +356,7 @@ export const DirectMessageScreen = () => {
           </div>
         ) : null}
 
-        <div className="mx-auto flex w-full max-w-[640px] items-end gap-2">
+        <div className="flex w-full items-end gap-2">
           <input
             value={draft}
             onChange={event => {

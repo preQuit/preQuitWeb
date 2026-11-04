@@ -22,7 +22,7 @@ const ChatsLayout = ({ children }: ChatsLayoutProps) => (
   // independently. Letting the row grow past the viewport makes the whole
   // page the scroll container, so scrolling a long thread drags the
   // conversation list up with it.
-  <div className="mx-auto flex h-dvh w-full max-w-5xl overflow-hidden">
+  <div className="flex h-dvh w-full overflow-hidden">
     <aside className="hidden w-[360px] shrink-0 flex-col overflow-y-auto lg:flex lg:border-r lg:border-line">
       <ScreenHeader title="Chats" />
       <ConversationList />

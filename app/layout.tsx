@@ -32,6 +32,12 @@ export const viewport: Viewport = {
   themeColor: '#000000',
   colorScheme: 'dark',
   viewportFit: 'cover',
+  // Browsers default to 'resizes-visual', which leaves the layout viewport —
+  // and every vh/dvh unit — at full height when the keyboard opens, so a
+  // focused composer scrolls the whole chat and takes the header off screen.
+  // 'resizes-content' shrinks the layout viewport instead, letting the thread
+  // pane absorb the loss while the header and composer stay put.
+  interactiveWidget: 'resizes-content',
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,

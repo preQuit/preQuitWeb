@@ -203,12 +203,15 @@ export const ConversationList = () => {
  * reported, not patched around here.
  */
 export const ChatsScreen = () => (
-  <main id="main-content" tabIndex={-1} className="flex min-h-dvh flex-col">
-    <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col lg:hidden">
+  // h-full, not min-h-dvh: the chats shell is a fixed-height overflow-hidden
+  // row, so a main that can grow past it clips the end of a long list with no
+  // way to scroll to it. The list pane owns the scrolling instead.
+  <main id="main-content" tabIndex={-1} className="flex h-full min-h-0 flex-col">
+    <div className="flex w-full min-h-0 flex-1 flex-col overflow-y-auto lg:hidden">
       <ScreenHeader title="Chats" />
       <ConversationList />
     </div>
-    <div className="hidden flex-1 items-center justify-center lg:flex">
+    <div className="hidden min-h-0 flex-1 items-center justify-center lg:flex">
       <EmptyState
         icon={MessagesSquare}
         title="Select a conversation"
