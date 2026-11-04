@@ -34,7 +34,11 @@ export const SettingsScreen = () => {
   };
 
   return (
-    <main className="flex flex-col">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="mx-auto flex min-h-dvh w-full max-w-xl flex-col"
+    >
       <ScreenHeader title="Settings" backHref={ROUTES.PROFILE} />
 
       <section className="flex flex-col gap-2.5 px-5 pt-2">

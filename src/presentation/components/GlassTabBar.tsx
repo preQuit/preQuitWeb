@@ -19,7 +19,10 @@ export const GlassTabBar = ({ onCompose }: GlassTabBarProps) => {
   const pathname = usePathname();
 
   return (
-    <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex justify-center px-6 pb-5 md:hidden">
+    <nav
+      aria-label="Primary"
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex justify-center px-6 pb-5 md:hidden"
+    >
       <div className="bar pointer-events-auto flex h-17 w-full max-w-lg items-center justify-around rounded-[34px] px-2">
         {PRIMARY_NAV.map(({ href, label, icon: Icon }) => {
           const current = isCurrent(pathname, href);

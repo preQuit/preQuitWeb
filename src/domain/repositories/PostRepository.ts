@@ -7,6 +7,7 @@ export interface PostRepository {
   like(postId: string): Promise<unknown>;
   unlike(postId: string): Promise<unknown>;
   save(postId: string): Promise<unknown>;
+  remove(postId: string): Promise<void>;
   unsave(postId: string): Promise<unknown>;
   comments(postId: string, options?: PageOptions): Promise<readonly Comment[]>;
   addComment(postId: string, body: string, parentId?: string | null): Promise<Comment>;

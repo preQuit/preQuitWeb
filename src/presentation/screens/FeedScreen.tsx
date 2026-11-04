@@ -31,7 +31,7 @@ const SURFACES: readonly SurfaceTab[] = [
   { key: FeedSurface.TRENDING, label: 'Trending' },
 ];
 
-export const SocialScreen = () => {
+export const FeedScreen = () => {
   const router = useRouter();
   const [surface, setSurface] = useState<FeedSurfaceValue>(FeedSurface.HOME);
   const [activePost, setActivePost] = useState<Post | null>(null);
@@ -46,6 +46,7 @@ export const SocialScreen = () => {
     loadMore,
     toggleLike,
     toggleSave,
+    deletePost,
   } = useFeed(surface);
   const sentinel = useInfiniteScroll<HTMLDivElement>(loadMore, hasMore);
   const { open } = useOpenConversation();
@@ -56,9 +57,13 @@ export const SocialScreen = () => {
   };
 
   return (
-    <main className="flex flex-col">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col"
+    >
       <ScreenHeader
-        title="Social"
+        title="Feed"
         actions={
           <button
             type="button"
@@ -71,7 +76,7 @@ export const SocialScreen = () => {
         }
       />
 
-      <div className="flex gap-2 px-5 pb-4" role="tablist" aria-label="Feed surface">
+      <div className="flex gap-2 pb-4" role="tablist" aria-label="Feed surface">
         {SURFACES.map(item => {
           const active = item.key === surface;
           return (
@@ -107,7 +112,7 @@ export const SocialScreen = () => {
         />
       ) : (
         <>
-          <div className="flex flex-col gap-4 px-4">
+          <div className="flex flex-col gap-4">
             {items.map(post => (
               <PostCard
                 key={post.id}
@@ -116,6 +121,7 @@ export const SocialScreen = () => {
                 onToggleSave={toggleSave}
                 onOpenAuthor={openAuthorChat}
                 onOpenComments={setActivePost}
+                onDelete={deletePost}
               />
             ))}
           </div>

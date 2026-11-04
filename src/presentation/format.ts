@@ -22,6 +22,14 @@ export const formatClock = (value: string | null): string => {
   return `${pad(parsed.getHours())}:${pad(parsed.getMinutes())}`;
 };
 
+/** Date and clock together, for the message info panel. */
+export const formatFullTimestamp = (value: string | null): string => {
+  const parsed = parse(value);
+  if (!parsed) return '';
+  const date = parsed.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+  return `${date}, ${pad(parsed.getHours())}:${pad(parsed.getMinutes())}`;
+};
+
 const SECOND_MS = 1_000;
 const MINUTE_MS = 60 * SECOND_MS;
 const HOUR_MS = 60 * MINUTE_MS;

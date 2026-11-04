@@ -33,7 +33,7 @@ export const SignInScreen = () => {
     setFailure(null);
     try {
       await signIn({ identifier, password });
-      router.replace(ROUTES.HOME);
+      router.replace(ROUTES.FEED);
     } catch (error) {
       setFailure(messageOf(error, 'Could not sign you in.'));
     }

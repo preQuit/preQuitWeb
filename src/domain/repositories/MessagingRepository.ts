@@ -10,6 +10,7 @@ export interface OutgoingMessage {
   readonly body: string;
   readonly clientNonce: string;
   readonly viewerId?: string | null;
+  readonly replyToId?: string | null;
 }
 
 export interface MessagingRepository {
@@ -18,4 +19,7 @@ export interface MessagingRepository {
   messages(conversationId: string, options?: ViewerScopedOptions): Promise<readonly Message[]>;
   sendMessage(conversationId: string, message: OutgoingMessage): Promise<Message>;
   markRead(conversationId: string): Promise<unknown>;
+  deleteMessage(messageId: string, forEveryone: boolean): Promise<void>;
+  clearConversation(conversationId: string): Promise<void>;
+  deleteConversation(conversationId: string): Promise<void>;
 }

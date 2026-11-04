@@ -1,10 +1,13 @@
 'use client';
 
-import { createContext, useContext, useMemo, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useMemo, type ReactNode } from 'react';
 
+import type { RealtimeClient } from '../../data/realtime/RealtimeClient';
+import { SocketIoRealtimeClient } from '../../data/realtime/SocketIoRealtimeClient';
 import { createContainer, type AppContainer, type UseCases } from './createContainer';
 
 const DependencyContext = createContext<AppContainer | null>(null);
+const RealtimeClientContext = createContext<RealtimeClient | null>(null);
 
 export interface DependencyProviderProps {
   readonly container?: AppContainer | null;
@@ -13,7 +16,21 @@ export interface DependencyProviderProps {
 
 export const DependencyProvider = ({ container = null, children }: DependencyProviderProps) => {
   const value = useMemo(() => container ?? createContainer(), [container]);
-  return <DependencyContext.Provider value={value}>{children}</DependencyContext.Provider>;
+
+  const realtime = useMemo<RealtimeClient>(
+    () => new SocketIoRealtimeClient({ url: value.config.realtimeUrl, session: value.session }),
+    [value],
+  );
+
+  useEffect(() => () => realtime.forceDisconnect(), [realtime]);
+
+  useEffect(() => value.onSessionLost(() => realtime.forceDisconnect()), [value, realtime]);
+
+  return (
+    <DependencyContext.Provider value={value}>
+      <RealtimeClientContext.Provider value={realtime}>{children}</RealtimeClientContext.Provider>
+    </DependencyContext.Provider>
+  );
 };
 
 export const useDependencies = (): AppContainer => {
@@ -23,3 +40,9 @@ export const useDependencies = (): AppContainer => {
 };
 
 export const useUseCases = (): UseCases => useDependencies().useCases;
+
+export const useRealtimeClient = (): RealtimeClient => {
+  const client = useContext(RealtimeClientContext);
+  if (!client) throw new Error('useRealtimeClient must be used inside a DependencyProvider');
+  return client;
+};

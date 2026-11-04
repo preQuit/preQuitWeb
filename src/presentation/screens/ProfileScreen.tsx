@@ -1,8 +1,9 @@
 'use client';
 
-import { ImageOff, RefreshCw } from 'lucide-react';
+import { Heart, ImageOff, Inbox, Pencil, RefreshCw, ShieldOff, UserX } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
+import type { LucideIcon } from 'lucide-react';
 
 import type { Post } from '../../domain/entities/Post';
 import { initialOf } from '../../domain/entities/User';
@@ -10,11 +11,13 @@ import { messageOf } from '../../domain/errors/AppError';
 import { CommentSheet } from '../components/CommentSheet';
 import { EmptyState } from '../components/EmptyState';
 import { PostCard } from '../components/PostCard';
+import { ScreenHeader } from '../components/ScreenHeader';
 import { SectionLabel } from '../components/SectionLabel';
 import { Spinner } from '../components/Spinner';
 import { formatCount } from '../format';
 import { useMyProfile } from '../hooks/useProfile';
 import { ROUTES } from '../navigation/routes';
+import { SOCIAL_GRAPH_ROUTES } from '../navigation/socialRoutes';
 
 interface StatProps {
   readonly value: number;
@@ -28,30 +31,68 @@ const Stat = ({ value, label }: StatProps) => (
   </div>
 );
 
+interface StatLinkProps extends StatProps {
+  readonly href: string;
+}
+
+const StatLink = ({ value, label, href }: StatLinkProps) => (
+  <Link href={href} className="flex flex-1 flex-col items-center gap-1">
+    <span className="text-lg font-bold text-paper">{formatCount(value)}</span>
+    <span className="text-[11px] font-medium text-muted">{label}</span>
+  </Link>
+);
+
+interface SocialLinkProps {
+  readonly icon: LucideIcon;
+  readonly label: string;
+  readonly href: string;
+}
+
+const SocialLink = ({ icon: Icon, label, href }: SocialLinkProps) => (
+  <Link
+    href={href}
+    className="surface flex flex-1 flex-col items-center gap-1.5 rounded-xl py-3 text-paper transition-colors hover:bg-cobalt/15"
+  >
+    <Icon size={17} />
+    <span className="text-[11px] font-semibold">{label}</span>
+  </Link>
+);
+
+const ProfileShell = ({ children }: { readonly children: ReactNode }) => (
+  <main
+    id="main-content"
+    tabIndex={-1}
+    className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col"
+  >
+    <ScreenHeader title="Profile" />
+    {children}
+  </main>
+);
+
 export const ProfileScreen = () => {
-  const { profile, posts, isLoading, isRefreshing, error, refresh } = useMyProfile();
+  const { profile, posts, isLoading, isRefreshing, error, refresh, deletePost } = useMyProfile();
   const [activePost, setActivePost] = useState<Post | null>(null);
 
   if (isLoading) {
     return (
-      <div className="flex min-h-dvh items-center justify-center">
-        <Spinner />
-      </div>
+      <ProfileShell>
+        <div className="flex flex-1 items-center justify-center py-20">
+          <Spinner />
+        </div>
+      </ProfileShell>
     );
   }
 
   if (!profile) {
     return (
-      <div className="flex min-h-dvh items-center justify-center px-8">
-        <p className="text-center text-sm text-muted">
-          {messageOf(error, 'Profile unavailable')}
-        </p>
-      </div>
+      <ProfileShell>
+        <EmptyState icon={UserX} title="Profile unavailable" body={messageOf(error, 'Could not load your profile')} />
+      </ProfileShell>
     );
   }
 
   return (
-    <main className="flex flex-col pt-10">
+    <ProfileShell>
       <section className="flex flex-col items-center px-6">
         <span className="surface-raised flex size-30 items-center justify-center rounded-full text-5xl font-extrabold text-paper shadow-[0_0_48px_rgb(var(--cobalt-rgb)/0.45)]">
           {profile.avatarUrl ? (
@@ -76,8 +117,16 @@ export const ProfileScreen = () => {
 
       <section className="surface mx-6 mt-5 flex divide-x divide-line rounded-2xl py-3.5">
         <Stat value={profile.counts.posts} label="Posts" />
-        <Stat value={profile.counts.followers} label="Followers" />
-        <Stat value={profile.counts.following} label="Following" />
+        <StatLink
+          value={profile.counts.followers}
+          label="Followers"
+          href={SOCIAL_GRAPH_ROUTES.followers(profile.handle)}
+        />
+        <StatLink
+          value={profile.counts.following}
+          label="Following"
+          href={SOCIAL_GRAPH_ROUTES.following(profile.handle)}
+        />
       </section>
 
       <div className="mx-6 mt-4 flex gap-3">
@@ -90,12 +139,25 @@ export const ProfileScreen = () => {
           Refresh
         </button>
         <Link
+          href={SOCIAL_GRAPH_ROUTES.editProfile}
+          className="surface flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-paper transition-colors hover:bg-cobalt/15"
+        >
+          <Pencil size={15} />
+          Edit profile
+        </Link>
+        <Link
           href={ROUTES.SETTINGS}
           className="surface flex flex-1 items-center justify-center rounded-xl py-3 text-sm font-semibold text-paper transition-colors hover:bg-cobalt/15"
         >
           Settings
         </Link>
       </div>
+
+      <section className="mx-6 mt-4 flex gap-3">
+        <SocialLink icon={Heart} label="Friends" href={SOCIAL_GRAPH_ROUTES.friends} />
+        <SocialLink icon={Inbox} label="Requests" href={SOCIAL_GRAPH_ROUTES.requests} />
+        <SocialLink icon={ShieldOff} label="Blocked" href={SOCIAL_GRAPH_ROUTES.blocked} />
+      </section>
 
       {profile.topTopics.length > 0 ? (
         <section className="mt-7 flex flex-col gap-3 px-6">
@@ -122,15 +184,20 @@ export const ProfileScreen = () => {
             body="Everything you publish will show up here."
           />
         ) : (
-          <div className="flex flex-col gap-4 px-4">
+          <div className="grid grid-cols-1 gap-4 px-4 lg:grid-cols-2">
             {posts.map(post => (
-              <PostCard key={post.id} post={post} onOpenComments={setActivePost} />
+              <PostCard
+                key={post.id}
+                post={post}
+                onOpenComments={setActivePost}
+                onDelete={deletePost}
+              />
             ))}
           </div>
         )}
       </section>
 
       <CommentSheet post={activePost} onClose={() => setActivePost(null)} />
-    </main>
+    </ProfileShell>
   );
 };

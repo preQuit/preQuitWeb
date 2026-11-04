@@ -1,7 +1,11 @@
 export const instant = false;
 
-import { HomeScreen } from '@/src/presentation/screens/HomeScreen';
+import { redirect } from 'next/navigation';
 
-const Page = () => <HomeScreen />;
+import { ROUTES } from '@/src/presentation/navigation/routes';
+
+// /home was the search screen before the C1 naming-inversion fix — redirect
+// so bookmarks and in-flight links from before the rename still resolve.
+const Page = () => redirect(ROUTES.SEARCH);
 
 export default Page;

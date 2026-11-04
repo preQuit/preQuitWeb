@@ -39,7 +39,7 @@ export const useRedirectWhenSignedIn = (): boolean => {
   const { isRestoring, isSignedIn } = useSession();
 
   useEffect(() => {
-    if (!isRestoring && isSignedIn) router.replace(ROUTES.HOME);
+    if (!isRestoring && isSignedIn) router.replace(ROUTES.FEED);
   }, [isRestoring, isSignedIn, router]);
 
   return isSignedIn;

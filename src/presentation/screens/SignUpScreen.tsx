@@ -66,15 +66,19 @@ export const SignUpScreen = () => {
     setNotice(null);
 
     try {
-      await signUp({
+      const result = await signUp({
         handle: draft.handle.trim().toLowerCase(),
         displayName: draft.displayName.trim() || draft.handle.trim(),
         email: draft.email.trim().toLowerCase(),
         password: draft.password,
         dateOfBirth: draft.dateOfBirth,
       });
+      // The server decides whether an account still needs verifying, so the
+      // copy follows nextStep rather than assuming a mail went out.
       setNotice(
-        `Account created. Check ${draft.email.trim()} for the verification link, then log in.`,
+        result.nextStep === 'verify_email'
+          ? `Account created. Check ${draft.email.trim()} for the verification link, then log in.`
+          : 'Account created. You can log in now.',
       );
     } catch (error) {
       setFailure(messageOf(error, 'Could not create your account.'));
