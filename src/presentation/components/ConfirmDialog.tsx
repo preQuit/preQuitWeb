@@ -7,6 +7,7 @@ export interface ConfirmDialogProps {
   readonly title: string;
   readonly body?: string;
   readonly confirmLabel?: string;
+  readonly busyLabel?: string;
   readonly cancelLabel?: string;
   readonly imageSrc?: string;
   readonly imageAlt?: string;
@@ -27,6 +28,7 @@ export const ConfirmDialog = ({
   title,
   body,
   confirmLabel = 'Delete',
+  busyLabel = 'Deleting…',
   cancelLabel = 'Cancel',
   imageSrc,
   imageAlt = '',
@@ -94,7 +96,7 @@ export const ConfirmDialog = ({
                   : 'bg-cobalt text-paper hover:bg-cobalt/85'
               }`}
             >
-              {busy ? 'Deleting…' : confirmLabel}
+              {busy ? busyLabel : confirmLabel}
             </button>
           </div>
         </div>
