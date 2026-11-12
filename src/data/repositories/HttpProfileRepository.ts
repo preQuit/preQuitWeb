@@ -1,5 +1,5 @@
 import type { Post } from '../../domain/entities/Post';
-import type { User, UserPayload } from '../../domain/entities/User';
+import type { PrivacySettings, User, UserPayload } from '../../domain/entities/User';
 import type { ProfilePatch, ProfileRepository } from '../../domain/repositories/ProfileRepository';
 import type { PageOptions, RequestOptions } from '../../domain/repositories/common';
 import type { HttpClient } from '../http/HttpClient';
@@ -30,5 +30,9 @@ export class HttpProfileRepository implements ProfileRepository {
 
   updateProfile(patch: ProfilePatch): Promise<unknown> {
     return this.http.patch('/me/profile', patch);
+  }
+
+  updatePrivacy(patch: Partial<PrivacySettings>): Promise<unknown> {
+    return this.http.patch('/me/settings', { privacy: patch });
   }
 }

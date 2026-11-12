@@ -44,6 +44,7 @@ import { SendMessageUseCase } from '../../application/messaging/SendMessageUseCa
 import { LoadMyProfileUseCase } from '../../application/profile/LoadMyProfileUseCase';
 import { LoadUserPostsUseCase } from '../../application/profile/LoadUserPostsUseCase';
 import { UpdateProfileUseCase } from '../../application/profile/UpdateProfileUseCase';
+import { UpdatePrivacySettingsUseCase } from '../../application/profile/UpdatePrivacySettingsUseCase';
 import { LoadTrendingTopicsUseCase } from '../../application/search/LoadTrendingTopicsUseCase';
 import { SearchContentUseCase } from '../../application/search/SearchContentUseCase';
 import { AcceptFollowRequestUseCase } from '../../application/social/AcceptFollowRequestUseCase';
@@ -99,6 +100,7 @@ export interface UseCases {
   readonly loadMyProfile: LoadMyProfileUseCase;
   readonly loadUserPosts: LoadUserPostsUseCase;
   readonly updateProfile: UpdateProfileUseCase;
+  readonly updatePrivacySettings: UpdatePrivacySettingsUseCase;
   readonly loadUserProfile: LoadUserProfileUseCase;
   readonly followUser: FollowUserUseCase;
   readonly unfollowUser: UnfollowUserUseCase;
@@ -175,6 +177,7 @@ const buildUseCases = (repositories: Repositories, session: SessionRepository): 
   loadMyProfile: new LoadMyProfileUseCase(repositories.profile),
   loadUserPosts: new LoadUserPostsUseCase(repositories.profile),
   updateProfile: new UpdateProfileUseCase(repositories.profile),
+  updatePrivacySettings: new UpdatePrivacySettingsUseCase(repositories.profile),
   loadUserProfile: new LoadUserProfileUseCase(repositories.profile),
 
   followUser: new FollowUserUseCase(repositories.social),
