@@ -11,6 +11,7 @@ import { HttpProfileRepository } from '../../data/repositories/HttpProfileReposi
 import { HttpSearchRepository } from '../../data/repositories/HttpSearchRepository';
 import { HttpSocialRepository } from '../../data/repositories/HttpSocialRepository';
 import { BrowserSessionRepository } from '../../data/storage/BrowserSessionRepository';
+import { compressImage } from '../../data/media/compressImage';
 
 import type { AuthRepository } from '../../domain/repositories/AuthRepository';
 import type { ComposerRepository } from '../../domain/repositories/ComposerRepository';
@@ -45,6 +46,7 @@ import { LoadMyProfileUseCase } from '../../application/profile/LoadMyProfileUse
 import { LoadUserPostsUseCase } from '../../application/profile/LoadUserPostsUseCase';
 import { UpdateProfileUseCase } from '../../application/profile/UpdateProfileUseCase';
 import { UpdatePrivacySettingsUseCase } from '../../application/profile/UpdatePrivacySettingsUseCase';
+import { UpdateAvatarUseCase } from '../../application/profile/UpdateAvatarUseCase';
 import { LoadTrendingTopicsUseCase } from '../../application/search/LoadTrendingTopicsUseCase';
 import { SearchContentUseCase } from '../../application/search/SearchContentUseCase';
 import { AcceptFollowRequestUseCase } from '../../application/social/AcceptFollowRequestUseCase';
@@ -101,6 +103,7 @@ export interface UseCases {
   readonly loadUserPosts: LoadUserPostsUseCase;
   readonly updateProfile: UpdateProfileUseCase;
   readonly updatePrivacySettings: UpdatePrivacySettingsUseCase;
+  readonly updateAvatar: UpdateAvatarUseCase;
   readonly loadUserProfile: LoadUserProfileUseCase;
   readonly followUser: FollowUserUseCase;
   readonly unfollowUser: UnfollowUserUseCase;
@@ -178,6 +181,7 @@ const buildUseCases = (repositories: Repositories, session: SessionRepository): 
   loadUserPosts: new LoadUserPostsUseCase(repositories.profile),
   updateProfile: new UpdateProfileUseCase(repositories.profile),
   updatePrivacySettings: new UpdatePrivacySettingsUseCase(repositories.profile),
+  updateAvatar: new UpdateAvatarUseCase(repositories.composer, repositories.profile, compressImage),
   loadUserProfile: new LoadUserProfileUseCase(repositories.profile),
 
   followUser: new FollowUserUseCase(repositories.social),
