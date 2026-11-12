@@ -2,10 +2,53 @@
 
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
-import type { ReactNode } from 'react';
+import { useRef, type MouseEvent, type ReactNode } from 'react';
 
-import { Emblem } from './Emblem';
-import { SolarSystem } from './SolarSystem';
+import { useBeamGif } from '../hooks/useBeamGif';
+
+const BRAND = 'PREQUIT';
+
+const BeamTitle = () => {
+  const ref = useRef<HTMLHeadingElement>(null);
+  const { url, onReveal } = useBeamGif(ref);
+
+  const track = (event: MouseEvent<HTMLHeadingElement>) => {
+    const node = ref.current;
+    if (!node) return;
+    const box = node.getBoundingClientRect();
+    node.style.setProperty('--x', `${event.clientX - box.left}px`);
+    node.style.setProperty('--y', `${event.clientY - box.top}px`);
+  };
+
+  const light = () => {
+    onReveal();
+    ref.current?.classList.add('is-lit');
+  };
+  const dim = () => ref.current?.classList.remove('is-lit');
+
+  return (
+    <h1
+      ref={ref}
+      tabIndex={0}
+      aria-label="PreQuit"
+      onMouseMove={track}
+      onMouseEnter={light}
+      onMouseLeave={dim}
+      onFocus={onReveal}
+      className="beam-title text-[8.75rem] font-bold lg:text-[15rem]"
+      style={{ fontFamily: "'Arexa', sans-serif", letterSpacing: '0.02em', lineHeight: 1 }}
+    >
+      <span aria-hidden className="beam-base">{BRAND}</span>
+      <span
+        aria-hidden
+        className="beam-lit"
+        style={url ? { backgroundImage: `url("${url}")` } : undefined}
+      >
+        {BRAND}
+      </span>
+    </h1>
+  );
+};
 
 /**
  * The shell every auth screen renders through: brand on the left, the form
@@ -23,18 +66,8 @@ export interface AuthSplitProps {
 export const AuthSplit = ({ title, subtitle, backHref, children }: AuthSplitProps) => (
   <main className="flex min-h-dvh flex-col lg:flex-row">
     <section className="flex flex-col items-center justify-center gap-5 px-8 pt-12 pb-6 lg:flex-1 lg:gap-10 lg:px-16 lg:py-16">
-      <div className="flex items-center gap-3 lg:flex-col lg:gap-5">
-        <Emblem size={52} className="lg:hidden" />
-        <Emblem size={136} className="hidden lg:block" />
-        <div className="flex flex-col items-start lg:items-center">
-          <h1 className="display-title text-3xl text-paper lg:text-5xl">PreQuit</h1>
-          <p className="hidden text-sm tracking-[0.3em] text-muted uppercase lg:block">
-            Eye of Internet
-          </p>
-        </div>
-      </div>
-      <div className="hidden lg:block">
-        <SolarSystem />
+      <div className="flex flex-col items-start lg:items-center">
+        <BeamTitle />
       </div>
     </section>
 

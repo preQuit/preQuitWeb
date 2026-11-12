@@ -15,7 +15,6 @@ import {
 import { ROUTES } from '../navigation/routes';
 import { useMyProfile } from '../hooks/useProfile';
 import { Avatar } from './Avatar';
-import { Emblem } from './Emblem';
 import { GlassButton } from './GlassButton';
 import { NavGlyph } from './NavGlyph';
 
@@ -102,7 +101,6 @@ export const SideRail = ({ onCompose }: SideRailProps) => {
           href={ROUTES.FEED}
           className="flex min-w-0 flex-1 items-center gap-2.5 transition-opacity hover:opacity-80"
         >
-          <Emblem size={30} className="shrink-0" />
           <span className="font-display truncate text-lg font-semibold text-paper">PreQuit</span>
         </Link>
         <Link
