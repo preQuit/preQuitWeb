@@ -10,4 +10,5 @@ glassmorphism treatment.
 | [architecture.md](./architecture.md) | Layer boundaries, dependency rule, SOLID mapping |
 | [api-contract.md](./api-contract.md) | Every endpoint the client calls, verified response shapes, known backend gaps |
 | [design-system.md](./design-system.md) | Glass tokens, utilities, animations, component inventory |
+| [navigation.md](./navigation.md) | Nav declaration, animated glyphs, rail width, SOLID mapping |
 | [parity.md](./parity.md) | Screen-by-screen mapping against the mobile app and where the web deliberately differs |
