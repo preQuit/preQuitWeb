@@ -15,4 +15,5 @@ export interface ProfileRepository {
   postsOf(userId: string, options?: PageOptions): Promise<readonly Post[]>;
   updateProfile(patch: ProfilePatch): Promise<unknown>;
   updatePrivacy(patch: Partial<PrivacySettings>): Promise<unknown>;
+  setAvatar(mediaId: string): Promise<unknown>;
 }

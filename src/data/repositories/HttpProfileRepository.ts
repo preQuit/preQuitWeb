@@ -35,4 +35,8 @@ export class HttpProfileRepository implements ProfileRepository {
   updatePrivacy(patch: Partial<PrivacySettings>): Promise<unknown> {
     return this.http.patch('/me/settings', { privacy: patch });
   }
+
+  setAvatar(mediaId: string): Promise<unknown> {
+    return this.http.put('/me/avatar', { mediaId });
+  }
 }
