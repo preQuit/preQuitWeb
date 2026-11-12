@@ -1,11 +1,12 @@
 'use client';
 
-import { Plus, Trash2 } from 'lucide-react';
+import { Camera, Plus, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 
 import type { ProfileLink } from '../../../domain/entities/User';
 import { messageOf } from '../../../domain/errors/AppError';
+import { Avatar } from '../../components/Avatar';
 import { FormError } from '../../components/FormError';
 import { FormNotice } from '../../components/FormNotice';
 import { GlassButton } from '../../components/GlassButton';
@@ -13,8 +14,12 @@ import { GlassField } from '../../components/GlassField';
 import { ScreenHeader } from '../../components/ScreenHeader';
 import { SectionLabel } from '../../components/SectionLabel';
 import { Spinner } from '../../components/Spinner';
+import { useAvatarUpload } from '../../hooks/useAvatarUpload';
 import { useSocialProfileEditor } from '../../hooks/useSocialProfileEditor';
 import { SOCIAL_GRAPH_ROUTES } from '../../navigation/socialRoutes';
+
+const kb = (bytes: number): string =>
+  bytes >= 1_048_576 ? `${(bytes / 1_048_576).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`;
 
 interface Draft {
   readonly displayName: string;
@@ -29,9 +34,25 @@ const BIO_MAX = 300;
 export const EditProfileScreen = () => {
   const router = useRouter();
   const { profile, isLoading, isSaving, error, save } = useSocialProfileEditor();
+  const avatar = useAvatarUpload();
   const [draft, setDraft] = useState<Draft | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const seeded = useRef(false);
+  const fileInput = useRef<HTMLInputElement>(null);
+
+  const pickAvatar = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    // Clear the input straight away, or re-picking the same file is a no-op.
+    event.target.value = '';
+    if (!file) return;
+    setNotice(null);
+    try {
+      await avatar.upload(file);
+      setNotice('Profile picture updated.');
+    } catch {
+      // surfaced below via `avatar.error`
+    }
+  };
 
   useEffect(() => {
     if (profile && !seeded.current) {
@@ -96,6 +117,44 @@ export const EditProfileScreen = () => {
       <ScreenHeader title="Edit profile" backHref={SOCIAL_GRAPH_ROUTES.root} />
 
       <form onSubmit={submit} className="flex flex-col gap-5 px-6">
+        <section className="flex flex-col items-center gap-3">
+          <div className="relative">
+            <Avatar name={profile?.displayName || profile?.handle || '?'} url={profile?.avatarUrl} size="xl" />
+            {avatar.isUploading ? (
+              <span className="absolute inset-0 flex items-center justify-center rounded-full bg-ink/70">
+                <Spinner />
+              </span>
+            ) : null}
+          </div>
+
+          {/* The visible control is the button; the input stays out of the
+              layout so it cannot be focused or styled into the form flow. */}
+          <input
+            ref={fileInput}
+            type="file"
+            accept="image/*"
+            className="sr-only"
+            onChange={pickAvatar}
+          />
+          <GlassButton
+            type="button"
+            tone="outline"
+            size="control"
+            disabled={avatar.isUploading}
+            onClick={() => fileInput.current?.click()}
+          >
+            <Camera size={15} />
+            {profile?.avatarUrl ? 'Change photo' : 'Add photo'}
+          </GlassButton>
+
+          <p className="text-center text-[12px] text-muted">
+            {avatar.result
+              ? `Resized and uploaded — ${kb(avatar.result.originalBytes)} down to ${kb(avatar.result.uploadedBytes)}.`
+              : 'Any size works. Pictures are cropped square and shrunk before upload.'}
+          </p>
+          <FormError message={avatar.error ? messageOf(avatar.error, 'Could not update your picture.') : null} />
+        </section>
+
         <GlassField
           label="Display name"
           value={draft.displayName}
