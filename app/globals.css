@@ -87,9 +87,8 @@
   --spacing-field: 3.5rem;
 
   /* Rail width is consumed by both SideRail (w-rail) and the app shell's
-     content offset (pl-rail); they must not drift apart. */
-  --spacing-rail: 4.5rem;
-  --spacing-rail-wide: 15rem;
+     content offset (md:pl-rail); they must not drift apart. */
+  --spacing-rail: 17rem;
 
   --animate-rise: rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-sheet: sheet 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -255,11 +254,13 @@
 }
 
 /* The floating nav chrome, and the only blurred surface left — the
-   mobile tab bar is translucent and everything else is not. */
+   mobile tab bar is translucent and everything else is not. Opaque
+   enough on its own to stay legible over scrolled content even where
+   backdrop-filter doesn't composite; blur is an enhancement on top. */
 @utility bar {
-  background: rgba(20, 20, 20, 0.72);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
+  background: rgba(10, 10, 10, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--color-line-strong);
 }
 
@@ -348,7 +349,7 @@
 }
 
 @utility tabbar-clear {
-  padding-bottom: 7rem;
+  padding-bottom: 5.5rem;
 }
 
 /*
