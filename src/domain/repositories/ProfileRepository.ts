@@ -1,5 +1,5 @@
 import type { Post } from '../entities/Post';
-import type { ProfileLink, User } from '../entities/User';
+import type { PrivacySettings, ProfileLink, User } from '../entities/User';
 import type { PageOptions, RequestOptions } from './common';
 
 export interface ProfilePatch {
@@ -14,4 +14,5 @@ export interface ProfileRepository {
   byHandle(handle: string, options?: RequestOptions): Promise<User>;
   postsOf(userId: string, options?: PageOptions): Promise<readonly Post[]>;
   updateProfile(patch: ProfilePatch): Promise<unknown>;
+  updatePrivacy(patch: Partial<PrivacySettings>): Promise<unknown>;
 }
