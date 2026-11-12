@@ -1,6 +1,6 @@
 'use client';
 
-import { Heart, ImageOff, Inbox, Pencil, RefreshCw, ShieldOff, UserX } from 'lucide-react';
+import { Heart, ImageOff, Inbox, Lock, Pencil, RefreshCw, ShieldOff, User2, UserX } from 'lucide-react';
 import Link from 'next/link';
 import { useState, type ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
@@ -9,6 +9,7 @@ import type { Post } from '../../domain/entities/Post';
 import { initialOf } from '../../domain/entities/User';
 import { messageOf } from '../../domain/errors/AppError';
 import { CommentSheet } from '../components/CommentSheet';
+import { ConfirmDialog } from '../components/ConfirmDialog';
 import { EmptyState } from '../components/EmptyState';
 import { PostCard } from '../components/PostCard';
 import { ScreenHeader } from '../components/ScreenHeader';
@@ -18,6 +19,19 @@ import { formatCount } from '../format';
 import { useMyProfile } from '../hooks/useProfile';
 import { ROUTES } from '../navigation/routes';
 import { SOCIAL_GRAPH_ROUTES } from '../navigation/socialRoutes';
+
+const PRIVACY_COPY = {
+  private: {
+    title: 'Go private?',
+    body: 'Only people who already follow you keep seeing your posts. Everyone else has to send a follow request.',
+    confirmLabel: 'Go private',
+  },
+  public: {
+    title: 'Go public?',
+    body: 'Anyone on PreQuit will be able to find your profile and read every post you have published.',
+    confirmLabel: 'Go public',
+  },
+} as const;
 
 interface StatProps {
   readonly value: number;
@@ -58,20 +72,38 @@ const SocialLink = ({ icon: Icon, label, href }: SocialLinkProps) => (
   </Link>
 );
 
-const ProfileShell = ({ children }: { readonly children: ReactNode }) => (
+const ProfileShell = ({
+  children,
+  actions,
+}: {
+  readonly children: ReactNode;
+  readonly actions?: ReactNode;
+}) => (
   <main
     id="main-content"
     tabIndex={-1}
     className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col"
   >
-    <ScreenHeader title="Profile" />
+    <ScreenHeader title="Profile" actions={actions} />
     {children}
   </main>
 );
 
 export const ProfileScreen = () => {
-  const { profile, posts, isLoading, isRefreshing, error, refresh, deletePost } = useMyProfile();
+  const {
+    profile,
+    posts,
+    isLoading,
+    isRefreshing,
+    error,
+    refresh,
+    deletePost,
+    isSavingPrivacy,
+    privacyError,
+    setAccountPrivate,
+  } = useMyProfile();
   const [activePost, setActivePost] = useState<Post | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -91,8 +123,28 @@ export const ProfileScreen = () => {
     );
   }
 
+  const target = profile.isPrivate ? 'public' : 'private';
+  const copy = PRIVACY_COPY[target];
+
+  const confirmToggle = async () => {
+    const saved = await setAccountPrivate(!profile.isPrivate);
+    if (saved) setConfirmOpen(false);
+  };
+
   return (
-    <ProfileShell>
+    <ProfileShell
+      actions={
+        <button
+          type="button"
+          onClick={() => setConfirmOpen(true)}
+          aria-label={profile.isPrivate ? 'Private account. Switch to public.' : 'Public account. Switch to private.'}
+          className="surface flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-semibold text-paper transition-colors hover:bg-cobalt/15"
+        >
+          {profile.isPrivate ? <Lock size={14} /> : <User2 size={14} />}
+          {profile.isPrivate ? 'Private' : 'Public'}
+        </button>
+      }
+    >
       <section className="flex flex-col items-center px-6">
         <span className="surface-raised flex size-30 items-center justify-center rounded-full text-5xl font-extrabold text-paper shadow-[0_0_48px_rgb(var(--cobalt-rgb)/0.45)]">
           {profile.avatarUrl ? (
@@ -198,6 +250,21 @@ export const ProfileScreen = () => {
       </section>
 
       <CommentSheet post={activePost} onClose={() => setActivePost(null)} />
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title={copy.title}
+        body={privacyError ?? copy.body}
+        confirmLabel={copy.confirmLabel}
+        busyLabel="Saving…"
+        cancelLabel="Not yet"
+        imageSrc="/omniman.gif"
+        imageAlt=""
+        destructive={false}
+        busy={isSavingPrivacy}
+        onConfirm={confirmToggle}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </ProfileShell>
   );
 };
