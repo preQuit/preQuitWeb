@@ -46,7 +46,9 @@ export const AppChrome = ({ children }: { readonly children: ReactNode }) => {
         Skip to content
       </a>
       <SideRail onCompose={open} />
-      <div className="pl-rail">
+      {/* md:, not unconditional — SideRail is `hidden md:flex`, so reserving
+          its width below md left every small screen with a dead gutter. */}
+      <div className="md:pl-rail">
         <div className={inThread ? '' : 'px-4 tabbar-clear md:pb-0'}>{children}</div>
       </div>
       {inThread ? null : <GlassTabBar onCompose={open} />}
