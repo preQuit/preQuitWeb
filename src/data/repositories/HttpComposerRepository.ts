@@ -1,6 +1,7 @@
 import type { Post } from '../../domain/entities/Post';
 import type {
   ComposerRepository,
+  MediaPurpose,
   NewPostDraft,
   UploadTicket,
 } from '../../domain/repositories/ComposerRepository';
@@ -13,10 +14,11 @@ export class HttpComposerRepository implements ComposerRepository {
 
   async requestUploadTickets(
     items: readonly { mimeType: string; byteSize: number }[],
+    purpose: MediaPurpose = 'post',
   ): Promise<readonly UploadTicket[]> {
     const tickets = await this.http.post<UploadTicket[]>(
       '/media/upload-tickets',
-      { purpose: 'post', items },
+      { purpose, items },
       { authenticated: true },
     );
     return tickets ?? [];

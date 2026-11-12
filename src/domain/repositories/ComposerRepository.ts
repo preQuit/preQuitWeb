@@ -9,6 +9,9 @@ export interface UploadTicket {
   readonly expiresAt: string;
 }
 
+/** Mirrors the API's upload-ticket purposes; the folder and quota follow it. */
+export type MediaPurpose = 'post' | 'avatar' | 'message';
+
 export interface NewPostDraft {
   readonly description: string;
   readonly media: readonly { readonly mediaId: string; readonly altText: string | null }[];
@@ -24,6 +27,7 @@ export interface NewPostDraft {
 export interface ComposerRepository {
   requestUploadTickets(
     items: readonly { mimeType: string; byteSize: number }[],
+    purpose?: MediaPurpose,
   ): Promise<readonly UploadTicket[]>;
   uploadToTicket(ticket: UploadTicket, file: File): Promise<string>;
   confirmUpload(mediaId: string, publicId: string): Promise<void>;
